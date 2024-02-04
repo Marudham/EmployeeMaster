@@ -1,22 +1,29 @@
 package com.employeemaster.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.employeemaster.service.SuperAdminService;
 import com.employeemaster.entity.Admin;
+import com.employeemaster.entity.ApiResponse;
+import com.employeemaster.entity.LoginData;
 
 import jakarta.servlet.http.HttpSession;
 
 import com.employeemaster.service.AdminService;
 import com.employeemaster.service.EmailService;
 
-@Controller
+@CrossOrigin("http://localhost:3000")
+@RestController
+@RequestMapping("/ems/controller")
 public class SuperAdminController {
 
 	@Autowired
@@ -27,30 +34,52 @@ public class SuperAdminController {
 
 	@Autowired
 	EmailService emailService;
+	
+	ApiResponse response = new ApiResponse();
 
 	@PostMapping("/superAdminLogin")
-	public String superAdminLogin(@RequestParam String email, @RequestParam String password, Model model, HttpSession session) {
+	public ResponseEntity<ApiResponse> superAdminLogin(@RequestBody LoginData data, HttpSession session) {
 		try {
+			String email = data.getEmail();
+			String password = data.getPassword();
 			if(superAdminService.isSuperAdminExist(email)) {
 				if(superAdminService.isValidSuperAdmin(email, password)) {
 					session.setAttribute("superAdmin", email);
-					model.addAttribute("admins", adminService.getAllAdmins());
-					return "superAdmin";
+					response.setStatus("success");
+					return ResponseEntity.ok(response);
 				}else {
-					model.addAttribute("message", "Incorrect Password");
-					return "superAdminLogin";
+					response.setStatus("password-mismatch");
+					response.setMessage("Incorrect Password");
+					return ResponseEntity.badRequest().body(response);
 				}
 			}else {
-				model.addAttribute("message", "Entered Email Does not exist");
-				return "superAdminLogin";
+				response.setStatus("not-exist");
+				response.setMessage("Entered Email Does not exist");
+				return ResponseEntity.badRequest().body(response);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			model.addAttribute("message", "Problem occured while Verifying the Login, Please try again");
-			return "superAdminLogin";
+			response.setStatus("error");
+			response.setMessage("Unexpected Error Occured While Verifying Login, Please try Again");
+			return ResponseEntity.internalServerError().body(response);
 		}
 	}
-
+	
+	@GetMapping("/fetchAdmins")
+	public ResponseEntity<ApiResponse> fetchAdmins(){
+		try {
+			response.setStatus("success");
+			response.setMessage("Admin lists");
+			response.setAdminList(adminService.getAllAdmins());
+			return ResponseEntity.ok(response);
+		}catch(Exception e) {
+			e.printStackTrace();
+			response.setStatus("error");
+			response.setMessage("Unexpected error occured while retrieving Admin details , Please try Again");
+			return ResponseEntity.internalServerError().body(response);
+		}
+	}
+	
 	@GetMapping("/approve/{id}")
 	public String approve(@PathVariable Long id, Model model, HttpSession session) {
 		try {
