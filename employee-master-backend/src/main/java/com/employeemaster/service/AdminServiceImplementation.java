@@ -13,16 +13,16 @@ public class AdminServiceImplementation implements AdminService{
 
 	@Autowired
 	AdminRepository adminRepo;
-	
+
 	@Autowired
 	TokenService tokenService;
-	
+
 	@Autowired
 	EmailService emailService;
-	
+
 	@Autowired
 	PasswordEncryptionService passwordEncryptionService;
-	
+
 	@Override
 	public boolean isAdminExist(String email) {
 		if(adminRepo.findByEmail(email) == null) {
@@ -33,23 +33,18 @@ public class AdminServiceImplementation implements AdminService{
 	}
 
 	@Override
-	public int addAdmin(Admin admin) {
-		try {
-			String token = tokenService.generateUniqueToken();
-			
-			admin.setEmailVerificationToken(token);
-			admin.setPassword(passwordEncryptionService.encryptPassword(admin.getPassword()));
-			adminRepo.save(admin);
-			String subject = "Account Verification - Employee Management System";
-			String body = "To verify your account, click the following link: "
-	                + "http://localhost:8080/verify?token=" + admin.getEmailVerificationToken() 
-	                + "&id=" + admin.getId();
-			emailService.sendEmail(admin.getEmail(), subject, body);
-			return 0;
-		}catch(Exception e){
-			e.printStackTrace();
-			return -1;
-		}
+	public void addAdmin(Admin admin) throws Exception{
+		String token = tokenService.generateUniqueToken();
+
+		admin.setEmailVerificationToken(token);
+		admin.setPassword(passwordEncryptionService.encryptPassword(admin.getPassword()));
+		adminRepo.save(admin);
+		String subject = "Account Verification - EmployeeMaster";
+		String body = "To verify your account, click the following link: "
+				+ "<br><a href=\"http://localhost:8080/ems/controller/verify?token=" + admin.getEmailVerificationToken() 
+				+ "&id=" + admin.getId() + "\">Click Here.</a>";
+		emailService.sendEmail(admin.getEmail(), subject, body);
+
 	}
 
 	@Override
@@ -74,7 +69,7 @@ public class AdminServiceImplementation implements AdminService{
 	@Override
 	public boolean verifyToken(Long id, String token) {
 		Admin admin = adminRepo.findByIdAndEmailVerificationToken(id, token);
-		
+
 		if(admin != null) {
 			admin.setVerified(true);
 			adminRepo.save(admin);
@@ -106,8 +101,8 @@ public class AdminServiceImplementation implements AdminService{
 		adminRepo.save(admin);
 		String subject = "Account Verification - Employee Management System";
 		String body = "To verify your account, click the following link: "
-                + "http://localhost:8080/verify?token=" + admin.getEmailVerificationToken() 
-                + "&id=" + admin.getId();
+				+ "http://localhost:8080/verify?token=" + admin.getEmailVerificationToken() 
+				+ "&id=" + admin.getId();
 		emailService.sendEmail(admin.getEmail(), subject, body);
 	}
 

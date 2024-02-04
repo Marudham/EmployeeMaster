@@ -12,11 +12,11 @@ public class NavController {
 	public String login() {
 		return "login";
 	}
-	
-	@GetMapping("/register")
-	public String register() {
-		return "register";
-	}
+//	
+//	@GetMapping("/register")
+//	public String register() {
+//		return "register";
+//	}
 	
 	@GetMapping("/addEmployee")
 	public String addEmployee(HttpSession session) {

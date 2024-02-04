@@ -8,7 +8,7 @@ public interface AdminService {
 
 	boolean isAdminExist(String email);
 
-	int addAdmin(Admin admin);
+	void addAdmin(Admin admin) throws Exception;
 
 	boolean isValidAdmin(String email, String password);
 

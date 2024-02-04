@@ -1,23 +1,28 @@
 package com.employeemaster.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.employeemaster.service.EmployeeService;
 import com.employeemaster.entity.Admin;
+import com.employeemaster.entity.ApiResponse;
+import com.employeemaster.entity.LoginData;
+import com.employeemaster.entity.RegisterData;
 import com.employeemaster.service.AdminService;
 import com.employeemaster.service.EmailService;
 
 import jakarta.servlet.http.HttpSession;
 
-
-
-@Controller
+@CrossOrigin("http://localhost:3000")
+@RestController
+@RequestMapping("/ems/controller")
 public class AdminController {
 
 	@Autowired
@@ -25,85 +30,81 @@ public class AdminController {
 
 	@Autowired
 	EmployeeService employeeService;
-	
+
 	@Autowired
 	EmailService emailService;
 
+	ApiResponse response = new ApiResponse();
+
 	@PostMapping("/login")
-	public String login(@RequestParam String email, @RequestParam String password,Model model,HttpSession session) {
+	public ResponseEntity<ApiResponse> login(@RequestBody LoginData data,Model model,HttpSession session) {
 		try {
+			String email = data.getEmail();
+			String password = data.getPassword();
 			if(adminService.isAdminExist(email)) {
 				if(adminService.isValidAdmin(email,password)) {
-					if(adminService.getAdmin(email).isVerified()) {
-						if(adminService.getAdmin(email).isAdmin()) {
+					Admin admin = adminService.getAdmin(email);
+					if(admin.isVerified()) {
+						if(admin.isAdmin()) {
 							session.setAttribute("user", adminService.getAdmin(email).getUsername());
 							session.setAttribute("adminId", adminService.getAdmin(email).getId());
-							model.addAttribute("employees", employeeService.fetchAllEmployeeByAdminId((long)session.getAttribute("adminId")));
-							return "redirect:/adminHome";
+							response.setStatus("success");
+							return ResponseEntity.ok(response);
 						}else {
-							model.addAttribute("message", "Entered Email is not Approved By SUPER_ADMIN");
-							return "login";
+							response.setStatus("not-approved");
+							response.setMessage("Entered Email is not Approved By SUPER_ADMIN");
+							return ResponseEntity.badRequest().body(response);
 						}
 					}else {
-//						ResponseEntity.badRequest().
-						model.addAttribute("message", "Entered Email is not verified, Check your Email or Click on Verify Email");
-						model.addAttribute("verify", true);
-						return "login";
+						response.setStatus("not-verified");
+						response.setMessage("Entered Email is not verified");
+						return ResponseEntity.badRequest().body(response);
 					}
 				}else {
-					model.addAttribute("message", "Incorrect Password");
-					return "login";
+					response.setStatus("incorrect-password");
+					response.setMessage("Entered Password is Incorrect");
+					return ResponseEntity.badRequest().body(response);
 				}
 			}else {
-				model.addAttribute("message", "Entered Email Does not exist");
-				return "login";
+				response.setStatus("email-not-match");
+				response.setMessage("Entered Email Does not exist");
+				return ResponseEntity.badRequest().body(response);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			model.addAttribute("message", "Problem Occured While Verifying Login, Please try Again");
-			return "login";
+			response.setStatus("error");
+			response.setMessage("Unexpected Error Occured While Verifying Login, Please try Again");
+			return ResponseEntity.internalServerError().body(response);
 		}
 	}
 
 	@PostMapping("/register")
-	public String register(@ModelAttribute Admin admin,Model model) {
+	public ResponseEntity<ApiResponse> register(@RequestBody RegisterData data,Model model) {
 		try {
+			Admin admin = new Admin();
+			admin.setEmail(data.getEmail());
+			admin.setPassword(data.getPassword());
+			admin.setUsername(data.getUsername());
 			if(!adminService.isAdminExist(admin.getEmail())) {
-				if(adminService.addAdmin(admin) == 0) {
-					model.addAttribute("message", "Registered Successfully");
-					model.addAttribute("note", true);
-				}else {
-					model.addAttribute("message", "Some Problem Occured while Register. Enter a Valid Email or Please Try Again");				
-				}
-				return "register";
+				adminService.addAdmin(admin);
+				response.setStatus("success");
+				response.setMessage("Registered Successfully");
+				return ResponseEntity.ok(response);
 			}else {
-				model.addAttribute("message", "Entered Email already Registered");
-				return "register";
+				response.setStatus("already-exist");
+				response.setMessage("Entered Email already Registered");
+				return ResponseEntity.badRequest().body(response);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			model.addAttribute("message", "Problem Occured While Registering , Please try Again");
-			return "register";
+			response.setStatus("error");
+			response.setMessage("Unexpected Error Occured While Registering, Please try Again");
+			return ResponseEntity.internalServerError().body(response);
 		}
 
 	}
+
 	
-	@GetMapping("/verify")
-	public String verifyToken(@RequestParam String token, @RequestParam Long id, Model model) {
-		try {
-			if(adminService.verifyToken(id,token)) {
-				model.addAttribute("message", "Email Verified Sucessfully");
-				return "login"; 
-			}else {
-				model.addAttribute("message", "Cannot verify This Email");
-				return "login";
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			model.addAttribute("message", "Problem Occured While Verifying the Email");
-			return "login";
-		}
-	}
 
 	@PostMapping("/requestEmail")
 	public String requestEmail(@RequestParam String email, Model model) {
@@ -123,39 +124,5 @@ public class AdminController {
 			return "requestEmail";
 		}
 	}
-//
-//	@PostMapping("/forgotPassword")
-//	public String forgotPassword(@RequestParam String email, Model model) {
-//		try {
-//			if(adminService.isAdminExist(email)) {
-//				String subject = "Reset Password - EmployeeMaster";
-//				String body = "To Reset your password click the following link: "
-//							+ "http://localhost:8080/resetPassword?id=" + adminService.getAdmin(email).getId();
-//				emailService.sendEmail(email, subject, body);
-//				model.addAttribute("message", "Reset Password Email send successfully");
-//				return "login";
-//			}else {
-//				model.addAttribute("message", "Entered Email Does not exist");
-//				return "forgotPassword";
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			model.addAttribute("message", "Problem Occured While sending Email, Enter a Valid Email or try Again");
-//			return "login";
-//		}
-//	}
-//	
-//	@PostMapping("/resetPassword")
-//	public String resetPassword(@PathVariable Long id, Model model) {
-//		try {
-//			//
-//			model.addAttribute("message", "Entered Email Does not exist");
-//			return "forgotPassword";
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			model.addAttribute("message", "Problem Occured While verifying the Link. Please Try Again");
-//			return "forgotPassword";
-//		}
-//	}
-//	
+
 }
