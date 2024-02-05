@@ -88,6 +88,11 @@ public class EmployeeServiceImplementation implements EmployeeService{
 			return true;
 		}
 	}
+
+	@Override
+	public void updateEmployee(Employee employee) {
+		employeeRepo.save(employee);
+	}
 	
 //	@Override
 //	public List<Employee> filterEmployees(String department, String position) {

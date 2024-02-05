@@ -1,5 +1,7 @@
 package com.employeemaster.controller;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -34,12 +36,13 @@ public class SuperAdminController {
 
 	@Autowired
 	EmailService emailService;
-	
+
 	ApiResponse response = new ApiResponse();
 
 	@PostMapping("/superAdminLogin")
 	public ResponseEntity<ApiResponse> superAdminLogin(@RequestBody LoginData data, HttpSession session) {
 		try {
+			response = new ApiResponse();
 			String email = data.getEmail();
 			String password = data.getPassword();
 			if(superAdminService.isSuperAdminExist(email)) {
@@ -54,7 +57,7 @@ public class SuperAdminController {
 				}
 			}else {
 				response.setStatus("not-exist");
-				response.setMessage("Entered Email Does not exist");
+				response.setMessage("Entered Email is not of the SUPER_ADMIN");
 				return ResponseEntity.badRequest().body(response);
 			}
 		} catch (Exception e) {
@@ -64,10 +67,11 @@ public class SuperAdminController {
 			return ResponseEntity.internalServerError().body(response);
 		}
 	}
-	
+
 	@GetMapping("/fetchAdmins")
 	public ResponseEntity<ApiResponse> fetchAdmins(){
 		try {
+			response = new ApiResponse();
 			response.setStatus("success");
 			response.setMessage("Admin lists");
 			response.setAdminList(adminService.getAllAdmins());
@@ -79,114 +83,55 @@ public class SuperAdminController {
 			return ResponseEntity.internalServerError().body(response);
 		}
 	}
-	
+
 	@GetMapping("/approve/{id}")
-	public String approve(@PathVariable Long id, Model model, HttpSession session) {
+	public ResponseEntity<ApiResponse> approve(@PathVariable Long id, HttpSession session) {
 		try {
-			if(session.getAttribute("superAdmin") != null) {
-				Admin admin = adminService.getAdminById(id);
-				admin.setAdmin(true);
-				adminService.updateAdmin(admin);
-				String subject = "Approval Status - EmployeeMaster";
-				String body = "You Have Been Approved By the SUPER_ADMIN";
-				emailService.sendEmail(admin.getEmail(), subject, body);
-				model.addAttribute("admins", adminService.getAllAdmins());
-				model.addAttribute("message", "Approve Status has been Updated");
-				return "superAdmin";
-			}else {
-				return "superAdminLogin";
-			}
+			response = new ApiResponse();
+			Admin admin = adminService.getAdminById(id);
+			admin.setAdmin(true);
+			adminService.updateAdmin(admin);
+			response.setStatus("success");
+			return ResponseEntity.ok(response);
 		}
 		catch(Exception e) {
 			e.printStackTrace();
-			try {
-				model.addAttribute("message", "Some problem occured while updating approve status");
-				model.addAttribute("admins", adminService.getAllAdmins());
-				return "superAdmin";
-			}catch(Exception e1){
-				e1.printStackTrace();
-				return "superAdminLogin";
-			}		
+			response.setStatus("error");
+			response.setMessage("Unexpected error occured while updating admin approve status, Please try Again");
+			return ResponseEntity.internalServerError().body(response);
 		}
 	}
 
 	@GetMapping("/disapprove/{id}")
-	public String disapprove(@PathVariable Long id, Model model, HttpSession session) {
+	public ResponseEntity<ApiResponse> disapprove(@PathVariable Long id) {
 		try {
-			if(session.getAttribute("superAdmin") != null) {
-				Admin admin = adminService.getAdminById(id);
-				admin.setAdmin(false);
-				adminService.updateAdmin(admin);
-				String subject = "Approval Status - EmployeeMaster";
-				String body = "You Have Been Disapproved By the SUPER_ADMIN";
-				emailService.sendEmail(admin.getEmail(), subject, body);
-				model.addAttribute("admins", adminService.getAllAdmins());
-				model.addAttribute("message", "Approve Status has been Updated");
-				return "superAdmin";
-			}else {
-				return "superAdminLogin";
-			}
+			response = new ApiResponse();
+			Admin admin = adminService.getAdminById(id);
+			admin.setAdmin(false);
+			adminService.updateAdmin(admin);
+			response.setStatus("success");
+			return ResponseEntity.ok(response);
 		}
 		catch(Exception e) {
 			e.printStackTrace();
-			try {
-				model.addAttribute("message", "Some problem occured while updating approve status");
-				model.addAttribute("admins", adminService.getAllAdmins());
-				return "superAdmin";
-			}catch(Exception e1){
-				e1.printStackTrace();
-				return "superAdminLogin";
-			}	
+			response.setStatus("error");
+			response.setMessage("Unexpected error occured while updating admin approve status, Please try Again");
+			return ResponseEntity.internalServerError().body(response);
 		}
 	}
-
-	@GetMapping("/sendMail/{id}")
-	public String sendMail(@PathVariable Long id, Model model, HttpSession session) {
-		try {
-			if(session.getAttribute("superAdmin") != null) {
-				adminService.sendVerificationEmail(adminService.getAdminById(id).getEmail());
-				model.addAttribute("message", "Verification Email has been Sent");
-				model.addAttribute("admins", adminService.getAllAdmins());
-				return "superAdmin";
-			}else {
-				return "superAdminLogin";
-			}
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			try {
-				model.addAttribute("message", "Problem Occured While sending Email, Enter a Valid Email or try Again");
-				model.addAttribute("admins", adminService.getAllAdmins());
-				return "superAdmin";
-			}catch(Exception e1){
-				e1.printStackTrace();
-				return "superAdminLogin";
-			}	
-		}
-	}
-
+	
 	@GetMapping("/deleteAdmin/{id}")
-	public String deleteAdmin(@PathVariable Long id, Model model, HttpSession session) {
+	public ResponseEntity<ApiResponse> deleteAdmin(@PathVariable Long id) {
 		try {
-			if(session.getAttribute("superAdmin") != null) {
-				adminService.deleteAdmin(id);
-				model.addAttribute("message", "Admin has been Deleted");
-				model.addAttribute("admins", adminService.getAllAdmins());
-				return "superAdmin";
-			}else {
-				return "superAdminLogin";
-			}
-			
+			response = new ApiResponse();
+			adminService.deleteAdmin(id);
+			response.setStatus("success");
+			return ResponseEntity.ok(response);
 		}catch(Exception e) {
 			e.printStackTrace();
-			try {
-				model.addAttribute("message", "Problem Occured While Deleting the Admin, Please try again");
-				model.addAttribute("admins", adminService.getAllAdmins());
-				return "superAdmin";
-			}catch(Exception e1){
-				e1.printStackTrace();
-				return "superAdminLogin";
-			}	
+			response.setStatus("error");
+			response.setMessage("Unexpected error occured while deleting admin");
+			return ResponseEntity.internalServerError().body(response);
 		}
 	}
 

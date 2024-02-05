@@ -24,4 +24,6 @@ public interface EmployeeService {
 
 	boolean isPhoneNoExist(String phoneNo);
 
+	void updateEmployee(Employee employee);
+
 }
