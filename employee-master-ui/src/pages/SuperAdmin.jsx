@@ -13,8 +13,6 @@ export default function Login() {
        try{
         const response = await axios.post("http://localhost:8080/ems/controller/superAdminLogin", {email, password});
         console.log(response.data);
-        console.log(response.status);
-        console.log(response);
         if(response.data.status === 'success'){
           navigate("/SAHome");
         }

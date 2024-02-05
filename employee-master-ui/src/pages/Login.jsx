@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux';
+import { login } from '../authSlice';
 import axios from'axios'
 
 export default function Login() {
@@ -7,15 +9,21 @@ export default function Login() {
   const [ email, setEmail ] = useState('');
   const [ password, setPassword ] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
         e.preventDefault();
        try{
         const response = await axios.post("http://localhost:8080/ems/controller/login", {email, password});
-        console.log(response.data);
         if(response.data.status === 'success'){
-          //redirect to adminHome component
-          navigate("/adminHome");
+          const response = await axios.get("http://localhost:8080/ems/controller/getAdminId" ,{ params: { email: email},});
+          if(response.data != null){
+            dispatch(login({ user: { email: email, id: response.data }, role: 'admin' }));
+            navigate("/adminHome");
+          }else{
+            console.log(response.data);
+            alert("Login --> null");
+          }
         }
        }catch(error){
         console.log(error.response.data);

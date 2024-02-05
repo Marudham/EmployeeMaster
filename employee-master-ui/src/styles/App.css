@@ -293,20 +293,22 @@ body {
 .sanav {
   display: block;
   text-align: center;
+  font-weight: 650;
   padding: 30px;
   margin-bottom: 10px;
   margin: 30px;
   margin-left: 80px;
   text-decoration: none;
-  color: #333;
-  background-color: #eee;
+  color: rgb(42, 42, 70);
+  background-color: #d1d1d1;
   border-radius: 5px;
   transition: background-color 0.3s ease;
   width: 200px;
 }
 
 .sanav:hover {
-  background-color: #b8b8b8;
+  background-color: #797979;
+  color: white;
 }
 
 @media (max-width: 1000px){
@@ -392,4 +394,377 @@ body {
 
 .btn:hover {
   cursor: pointer;
+}
+
+.no-message{
+  border: 1px solid #2c3e50;
+  color: red;
+  margin-left: 20px;
+}
+
+.no-message:hover{
+  cursor: pointer;
+  background-color: red;
+  color: white;
+}
+
+/* ViewEmployee styles */
+
+.eview-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.eview-row {
+  margin-bottom: 20px;
+}
+
+.eview-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.eview-thead {
+  background-color: #343a40;
+  color: #fff;
+}
+
+.eview-header{
+  text-align: center;
+}
+
+.eview-tr, .eview-tr th{
+  padding: 10px;
+}
+
+.eview-tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.eview-table tr:hover{
+  background-color:silver;
+}
+
+.eview-tbody td {
+  padding: 12px;
+  border: 1px solid #dee2e6;
+}
+
+
+.eview-table td, .eview-table tr{
+  padding: 14px;
+  text-align: left;
+}
+
+.eview-link {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 15px;
+  border-bottom: 2px solid #007bff;
+}
+
+.eview-btn-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.eview-btn-update, .eview-btn-delete {
+  padding: 6px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-decoration: none;
+}
+
+.eview-btn-update {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.eview-btn-delete {
+  background-color: #dc3545;
+  color: #fff;
+  margin-left: 5px;
+}
+
+.eview-btn-update:hover,
+.eview-btn-delete:hover {
+  cursor: pointer;
+}
+
+.eview-btn-n{
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+.eview-btn-n:hover{
+  background-color: #0056b3;
+}
+
+/* AddEmployee.css */
+
+.eadd-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.eadd-header {
+  text-align: center;
+  color: #007bff;
+}
+
+.eadd-form {
+  display: grid;
+  gap: 15px;
+}
+
+.eadd-go-back-div {
+  margin-top: 20px;
+}
+
+.eadd-go-back {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.eadd-go-back:hover {
+  background-color: #0056b3;
+}
+
+/* Common styling for form fields */
+.eadd-container input[type="text"],
+.eadd-container input[type="email"],
+.eadd-container input[type="tel"],
+.eadd-container select,
+.eadd-container input[type="date"] {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Styling for form groups and error messages */
+.eadd-form-group {
+  position: relative;
+}
+
+.eadd-form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.eadd-error {
+  color: #dc3545;
+  font-size: 14px;
+  margin-top: 5px;
+  position: absolute;
+  top: 100%;
+}
+
+/* Styling for the submit button */
+.eadd-container button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.eadd-container button:hover {
+  background-color: #0056b3;
+}
+
+/* Styling for form groups and error messages */
+.eadd-form-group {
+  margin-bottom: 15px;
+}
+
+.eadd-form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.eadd-error {
+  color: #dc3545;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+/* viewEmployee  */
+
+.employee-details {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.employee-details-header {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #343a40;
+}
+
+.employee-details-header {
+	text-align: center;
+	color: #333;
+	margin-bottom: 20px;
+}
+
+.employee-details-form {
+	width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.employee-details-form label {
+	display: block;
+	margin-bottom: 5px;
+	font-weight: bold;
+	color: #444;
+}
+
+.employee-details-form span {
+	display: block;
+	margin-bottom: 15px;
+	color: #666;
+}
+
+.employee-details-button-container {
+	margin-top: 30px;
+	text-align: center;
+}
+
+.employee-details-button-container a {
+	padding: 10px 20px;
+	margin: 0 10px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+  text-decoration: none;
+}
+
+.employee-details-button-container a.update {
+	background-color: #007bff;
+	color: #fff;
+}
+
+.employee-details-button-container a.delete {
+	background-color: #dc3545;
+	color: #fff;
+}
+
+.employee-details-button-container a.back {
+	background-color: #6c757d;
+	color: #fff;
+}
+
+/* employee update */
+
+.eu-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.eu-go-back-div {
+  margin-bottom: 20px;
+}
+
+.eu-go-back {
+  text-decoration: none;
+  background-color: #3498db;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 5px;
+}
+
+.eu-header {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.eu-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.eu-form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.eu-error {
+  color: #e74c3c;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+#eu-message {
+  background-color: #2ecc71;
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.eu-no-message {
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 5px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.au-button {
+  background-color: #2ecc71;
+  color: #fff;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.au-button:hover {
+  background-color: #27ae60;
 }

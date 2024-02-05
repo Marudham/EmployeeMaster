@@ -1,29 +1,80 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 
 export default function SAViewAdmin() {
+
   const [admins, setAdmins] = useState([]);
+  const [ message, setMessage ] = useState('');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080/ems/controller/fetchAdmins");
-        console.log(response.data); // Log the data from the response
-        setAdmins(response.data.adminList);
-      } catch (error) {
-        console.error(error.response);
-      }
-    };
-
+  useEffect( () => {
     fetchData();
   }, []);
+
+  async function fetchData() {
+    try {
+      const response = await axios.get("http://localhost:8080/ems/controller/fetchAdmins");
+      setAdmins(response.data.adminList);
+    } catch (error) {
+      handleCommonError(error)
+    }
+  }
+
+  async function handleApprove(id) {
+    try{
+      const response = await axios.get(`http://localhost:8080/ems/controller/approve/${id}`);
+      if(response.data.status === 'success'){
+        setMessage("Admin Approve status has been updated successfully")
+      }else{
+        setMessage("Cannot update Admin approve status, Please try again")
+      }
+    }catch(error){
+      handleCommonError(error)
+    }finally{
+      fetchData()
+    }
+  }
+
+  async function handleDisapprove(id) {
+      try{
+        const response = await axios.get(`http://localhost:8080/ems/controller/disapprove/${id}`);
+        if(response.data.status === 'success'){
+          setMessage("Admin Approve status has been updated successfully")
+        }else{
+          setMessage("Cannot update Admin approve status, Please try again")
+        }
+      }catch(error){
+        handleCommonError(error)
+      }finally{
+        fetchData();
+      }
+  }
+
+  async function handleDelete(id){
+    try {
+      const response = await axios.get(`http://localhost:8080/ems/controller/deleteAdmin/${id}`);
+      if(response.data.status === 'success'){
+        setMessage("Admin Deleted successfully")
+      }else{
+        setMessage("Cannot Delete Admin, Please try again")
+      }
+    } catch (error) {
+      handleCommonError(error);
+    }finally{
+      fetchData();
+    }
+  }
+
+  function handleCommonError(error) {
+    console.log(error.response.data);
+    setMessage(error.response.data.message);
+  }
 
   return (
     <div className="sa-view-container">
       <div className="sa-view-row">
         <h1>Admin List</h1>
       </div>
+      { message && <p id="message">{message}<button className='no-message' onClick={() => setMessage('')}>X</button></p>}
       <table className="sa-view-table">
         <thead className="sa-view-thead">
           <tr>
@@ -34,7 +85,6 @@ export default function SAViewAdmin() {
             <th>Actions</th>
           </tr>
         </thead>
-
         <tbody className='sa-view-tbody'>
           {admins.map((admin) => (
             <tr key={admin.id}>
@@ -53,23 +103,23 @@ export default function SAViewAdmin() {
                 {admin.admin ? (
                   <div>
                     Approved 
-                    <Link to={`/disapprove/${admin.id}`} className="btn btn-primary">
+                    <button onClick={ () => handleDisapprove(admin.id)} className="btn btn-primary">
                        Disapprove
-                    </Link>
+                    </button>
                   </div>
                 ) : (
                   <div>
                     Not Approved 
-                    <Link to={`/approve/${admin.id}`} className="btn btn-primary">
+                    <button onClick={ () => handleApprove(admin.id)} className="btn btn-primary">
                       Approve
-                    </Link>
+                    </button>
                   </div>
                 )}
               </td>
               <td>
-                <Link to={`/deleteAdmin/${admin.id}`} className="btn btn-danger">
+                <button onClick={ () => handleDelete(admin.id)} className="btn btn-danger">
                   Delete
-                </Link>
+                </button>
               </td>
             </tr>
           ))}

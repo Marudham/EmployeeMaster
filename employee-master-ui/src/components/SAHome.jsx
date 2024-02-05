@@ -16,7 +16,7 @@ export default function SAHome() {
           <Link className='sa-nav-link' to={'/SAHome'}>Super Admin Dashboard</Link>
         </li>
         <li>
-          <Link className='sa-nav-link' to={'/logout'}>Log Out</Link>
+          <Link className='sa-nav-link' to={'/'}>Log Out</Link>
         </li>
       </ul>
     </nav>
@@ -25,6 +25,7 @@ export default function SAHome() {
         <Route path='/viewAdmins' element={<SAViewAdmin />} />
         <Route path='/viewAct' element={<SAViewAct />} />
         <Route path='/viewEmp' element={<SAViewEmp />} />
+        {/* <Route path='/viewEmp/:empId' element={< />} /> */}
     </Routes>
   </div>
   )
