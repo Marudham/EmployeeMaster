@@ -1,29 +1,29 @@
 package com.employeemaster.controller;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.employeemaster.entity.AdminActivity;
 import com.employeemaster.entity.ApiResponse;
 import com.employeemaster.entity.Employee;
+import com.employeemaster.entity.EmployeeAfter;
+import com.employeemaster.entity.EmployeeBefore;
+import com.employeemaster.service.AdminActivityService;
+import com.employeemaster.service.AdminService;
+import com.employeemaster.service.EmployeeAfterService;
+import com.employeemaster.service.EmployeeBeforeService;
 import com.employeemaster.service.EmployeeService;
-
-import jakarta.servlet.http.HttpSession;
 
 @CrossOrigin("http://localhost:3000")
 @RestController
@@ -32,17 +32,40 @@ public class EmployeeController {
 
 	@Autowired
 	EmployeeService employeeService;
+	
+	@Autowired
+	AdminService adminService;
+	
+	@Autowired
+	AdminActivityService adminActivityService;
+	
+	@Autowired
+	EmployeeBeforeService employeeBeforeService;
+	
+	@Autowired
+	EmployeeAfterService employeeAfterService;
 
 	ApiResponse response;
 
+	AdminActivity adminActivity;
+	
 	@PostMapping("/addEmployee")
 	public ResponseEntity<ApiResponse> addEmployee(@RequestBody Employee employee, @RequestParam Long id) {
+		response = new ApiResponse();
 		try {
-			response = new ApiResponse();
+			adminActivity = new AdminActivity();
 			if(!employeeService.isEmployeeExist(employee.getEmail())) {
 				if(!employeeService.isPhoneNoExist(employee.getPhoneNo())) {
 					employee.setAddedByAdminId(id);
 					employeeService.addEmployee(employee);
+					adminActivity.setActivity("Add");
+					adminActivity.setAdmin(adminService.getAdminById(id));
+					EmployeeAfter after = new EmployeeAfter(employee);
+					employeeAfterService.save(after);
+					adminActivity.setAfter(after);
+					adminActivity.setBefore(null);
+					adminActivity.setTimestamp(LocalDateTime.now());
+					adminActivityService.addActivity(adminActivity);
 					response.setStatus("success");
 					return ResponseEntity.ok(response);
 				}else {
@@ -59,15 +82,16 @@ public class EmployeeController {
 		}catch(Exception e) {
 			e.printStackTrace();
 			response.setStatus("error");
-			response.setMessage("Entered Employee Phone No already exist");
+			response.setMessage("Unexpected error occured while Adding employee, Please try again");
 			return ResponseEntity.internalServerError().body(response);
 		}
 	}
 
 	@GetMapping("/employeeDetails")
 	public ResponseEntity<ApiResponse> employeeDetails(@RequestParam Long id) {
+		response = new ApiResponse();
 		try {
-			response = new ApiResponse();
+			adminActivity = new AdminActivity();
 			Employee employee = employeeService.getEmployeeById(id);
 			response.setStatus("success");
 			response.setEmployee(employee);
@@ -75,121 +99,70 @@ public class EmployeeController {
 		}catch(Exception e) {
 			e.printStackTrace();
 			response.setStatus("error");
-			response.setMessage("Unexpected error occured retrieving employee details");
+			response.setMessage("Unexpected error occured while retrieving employee details");
 			return ResponseEntity.internalServerError().body(response);
 		}
 	}
 
 	@PutMapping("/updateEmployee")
-	public ResponseEntity<ApiResponse> updateEmployee(@RequestBody Employee employee) {
+	public ResponseEntity<ApiResponse> updateEmployee(@RequestBody Employee employee, @RequestParam String changeMade) {
 		response = new ApiResponse();
 		try {
-			System.out.println(employee);
+			EmployeeBefore before = new EmployeeBefore(employeeService.getEmployeeById(employee.getId()));
+			EmployeeAfter after = new EmployeeAfter(employee);
+			employeeBeforeService.save(before);
+			employeeAfterService.save(after);
+			
 			employeeService.updateEmployee(employee);
+		
+			adminActivity = new AdminActivity();
+			adminActivity.setAdmin(adminService.getAdminById(employee.getAddedByAdminId()));
+			adminActivity.setActivity("Update");
+			adminActivity.setBefore(before);
+			adminActivity.setAfter(after);
+			adminActivity.setTimestamp(LocalDateTime.now());
+			adminActivity.setChangeMade(changeMade);
+			adminActivityService.addActivity(adminActivity);
 			response.setStatus("success");
 			return ResponseEntity.ok(response);
 		}catch(Exception e) {
 			e.printStackTrace();
 			response.setStatus("error");
-			response.setMessage("Unexpected error occured updating employee details");
+			response.setMessage("Unexpected error occured while updating employee details");
 			return ResponseEntity.internalServerError().body(response);
 		}
 	}
 
-	@GetMapping("/deleteEmployee/{id}")
-	public String deleteEmployee(@PathVariable long id, Model model,HttpSession session) {
+	@GetMapping("/deleteEmployee")
+	public ResponseEntity<ApiResponse> deleteEmployee(@RequestParam Long id) {
+		response = new ApiResponse();
 		try {
-			if(session.getAttribute("user") != null) {
-				employeeService.deleteEmployee(id);
-				model.addAttribute("employees", employeeService.fetchAllEmployeeByAdminId((long)session.getAttribute("adminId")));
-				model.addAttribute("message", "Employee Deleted successfully");
-				return "adminHome";
-			}else {
-				return "login";
-			}
+			employeeService.deleteEmployee(id);
+			response.setStatus("success");
+			return ResponseEntity.ok(response);
 		} catch(Exception e) {
 			e.printStackTrace();
-			try {
-				model.addAttribute("employees", employeeService.fetchAllEmployeeByAdminId((long)session.getAttribute("adminId")));
-				model.addAttribute("message", "Problem occured while Deleting Employee,  Try again");
-				return "adminHome";
-			}catch(Exception e1){
-				e1.printStackTrace();
-				return "login";
-			}	
-		}
-	}
-
-
-	@GetMapping("/admin")
-	public String admin(Model model,HttpSession session) {
-		try {
-			if(session.getAttribute("user") != null) {
-				model.addAttribute("employees", employeeService.fetchAllEmployeeByAdminId((long)session.getAttribute("adminId")));
-				return "adminHome";
-			}else {
-				return "login";
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			try {
-				model.addAttribute("employees", employeeService.fetchAllEmployeeByAdminId((long)session.getAttribute("adminId")));
-				model.addAttribute("message", "Problem occured while retrieving Employee details,  Try again");
-				return "adminHome";
-			}catch(Exception e1){
-				e1.printStackTrace();
-				return "login";
-			}	
-		}
-	}
-
-
-	@GetMapping("/filter")
-	public String filter(Model model, HttpSession session) {
-		try {
-			if(session.getAttribute("user") != null) {
-				model.addAttribute("employees",employeeService.fetchAllEmployee());
-				return "filter";
-			}else {
-				return "login";
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
-			try {
-				model.addAttribute("employees", employeeService.fetchAllEmployeeByAdminId((long)session.getAttribute("adminId")));
-				model.addAttribute("message", "Problem occured while retrieving Employee details,  Try again");
-				return "adminHome";
-			}catch(Exception e1){
-				e1.printStackTrace();
-				return "login";
-			}	
+			response.setStatus("error");
+			response.setMessage("Unexpected error occured while  Deleting Employee");
+			return ResponseEntity.internalServerError().body(response);
 		}
 	}
 
 	@GetMapping("/applyFilter")
-	public String applyFilter(@RequestParam("filterBasedOn") String filterBasedOn, 
-			@RequestParam("filterValue") String filterValue, 
-			Model model, HttpSession session) {
+	public ResponseEntity<ApiResponse> applyFilter(@RequestParam("filterBasedOn") String filterBasedOn, 
+			@RequestParam("filterValue") String filterValue) {
+		response = new ApiResponse();
 		try {
-			if(session.getAttribute("user") != null) {
-				model.addAttribute("employees",employeeService.fetchAllEmployee());
-				model.addAttribute("filterEmployees", employeeService.filterEmployees(filterBasedOn, filterValue));
-				return "filter";
-			}else {
-				return "login";
-			}
+			List<Employee> filteredEmployees = employeeService.filterEmployees(filterBasedOn, filterValue);
+			response.setStatus("success");
+			response.setEmployeeList(filteredEmployees);
+			return ResponseEntity.ok(response);
 		}catch (Exception e) {
 			e.printStackTrace();
-			try {
-				model.addAttribute("employees", employeeService.fetchAllEmployeeByAdminId((long)session.getAttribute("adminId")));
-				model.addAttribute("message", "Problem occured while retrieving Employee details,  Try again");
-				return "adminHome";
-			}catch(Exception e1){
-				e1.printStackTrace();
-				return "login";
-			}	
+			response.setStatus("error");
+			response.setMessage("Unexpected error occured while Applying filter on Employees");
+			return ResponseEntity.internalServerError().body(response);
 		}
 	}
-
 
 }

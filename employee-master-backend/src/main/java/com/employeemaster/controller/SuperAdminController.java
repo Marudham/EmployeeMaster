@@ -1,10 +1,9 @@
 package com.employeemaster.controller;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,12 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.employeemaster.service.SuperAdminService;
 import com.employeemaster.entity.Admin;
 import com.employeemaster.entity.ApiResponse;
+import com.employeemaster.entity.Employee;
 import com.employeemaster.entity.LoginData;
 
 import jakarta.servlet.http.HttpSession;
 
 import com.employeemaster.service.AdminService;
 import com.employeemaster.service.EmailService;
+import com.employeemaster.service.EmployeeService;
 
 @CrossOrigin("http://localhost:3000")
 @RestController
@@ -36,6 +37,9 @@ public class SuperAdminController {
 
 	@Autowired
 	EmailService emailService;
+	
+	@Autowired
+	EmployeeService employeeService;
 
 	ApiResponse response = new ApiResponse();
 
@@ -136,18 +140,19 @@ public class SuperAdminController {
 	}
 
 
-	@GetMapping("/superAdmin")
-	public String superAdmin(Model model,HttpSession session) {
+	@GetMapping("/fetchAllEmployees")
+	public ResponseEntity<ApiResponse> fetchAllEmployees() {
+		response = new ApiResponse();
 		try {
-			if(session.getAttribute("superAdmin") != null) {
-				model.addAttribute("admins", adminService.getAllAdmins());
-				return "superAdmin";
-			}else {
-				return "superAdminLogin";
-			}
+			List<Employee> employeeList = employeeService.fetchAllEmployee();
+			response.setStatus("success");
+			response.setEmployeeList(employeeList);
+			return ResponseEntity.ok(response);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "superAdminLogin";
+			response.setStatus("error");
+			response.setMessage("Unexpected error occured while retrieving employee details");
+			return ResponseEntity.internalServerError().body(response);
 		}
 	}
 }

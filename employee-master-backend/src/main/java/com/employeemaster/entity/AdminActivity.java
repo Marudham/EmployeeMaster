@@ -6,7 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class AdminActivity {
@@ -14,19 +14,20 @@ public class AdminActivity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	private String activity;
 	private String changeMade;
 	private LocalDateTime timestamp;
-	@OneToOne
-	private Employee before;
-	@OneToOne
-	private Employee after;
-	@OneToOne
+	@ManyToOne
+	private EmployeeBefore before;
+	@ManyToOne
+	private EmployeeAfter after;
+	@ManyToOne
 	private Admin admin;
-
+	
 	@Override
 	public String toString() {
-		return "AdminActivity [id=" + id + ", changeMade=" + changeMade + ", timestamp=" + timestamp + ", before="
-				+ before + ", after=" + after + ", admin=" + admin + "]";
+		return "AdminActivity [id=" + id + ", activity=" + activity + ", changeMade=" + changeMade + ", timestamp="
+				+ timestamp + ", before=" + before + ", after=" + after + ", admin=" + admin + "]";
 	}
 
 	public AdminActivity() {
@@ -34,10 +35,11 @@ public class AdminActivity {
 		// TODO Auto-generated constructor stub
 	}
 
-	public AdminActivity(Long id, String changeMade, LocalDateTime timestamp, Employee before, Employee after,
-			Admin admin) {
+	public AdminActivity(Long id, String activity, String changeMade, LocalDateTime timestamp, EmployeeBefore before,
+			EmployeeAfter after, Admin admin) {
 		super();
 		this.id = id;
+		this.activity = activity;
 		this.changeMade = changeMade;
 		this.timestamp = timestamp;
 		this.before = before;
@@ -53,6 +55,14 @@ public class AdminActivity {
 		this.id = id;
 	}
 
+	public LocalDateTime getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(LocalDateTime timestamp) {
+		this.timestamp = timestamp;
+	}
+	
 	public String getChangeMade() {
 		return changeMade;
 	}
@@ -61,27 +71,19 @@ public class AdminActivity {
 		this.changeMade = changeMade;
 	}
 
-	public LocalDateTime getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(LocalDateTime timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	public Employee getBefore() {
+	public EmployeeBefore getBefore() {
 		return before;
 	}
 
-	public void setBefore(Employee before) {
+	public void setBefore(EmployeeBefore before) {
 		this.before = before;
 	}
 
-	public Employee getAfter() {
+	public EmployeeAfter getAfter() {
 		return after;
 	}
 
-	public void setAfter(Employee after) {
+	public void setAfter(EmployeeAfter after) {
 		this.after = after;
 	}
 
@@ -92,5 +94,14 @@ public class AdminActivity {
 	public void setAdmin(Admin admin) {
 		this.admin = admin;
 	}
+
+	public String getActivity() {
+		return activity;
+	}
+
+	public void setActivity(String activity) {
+		this.activity = activity;
+	}
+	
 	
 }

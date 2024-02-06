@@ -2,6 +2,7 @@ package com.employeemaster.entity;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,6 +21,7 @@ public class Admin {
 	private boolean isVerified;
 	private boolean isAdmin;
 	private String emailVerificationToken;
+//	@OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
 	@OneToMany
 	private List<AdminActivity> activities;
 	

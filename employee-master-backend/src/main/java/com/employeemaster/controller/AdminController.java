@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,10 +19,9 @@ import com.employeemaster.entity.ApiResponse;
 import com.employeemaster.entity.Employee;
 import com.employeemaster.entity.LoginData;
 import com.employeemaster.entity.RegisterData;
+import com.employeemaster.service.AdminActivityService;
 import com.employeemaster.service.AdminService;
 import com.employeemaster.service.EmailService;
-
-import jakarta.servlet.http.HttpSession;
 
 @CrossOrigin("http://localhost:3000")
 @RestController
@@ -35,6 +33,9 @@ public class AdminController {
 
 	@Autowired
 	EmployeeService employeeService;
+	
+	@Autowired
+	AdminActivityService adminActivityService;
 
 	@Autowired
 	EmailService emailService;
@@ -42,7 +43,7 @@ public class AdminController {
 	ApiResponse response = new ApiResponse();
 
 	@PostMapping("/login")
-	public ResponseEntity<ApiResponse> login(@RequestBody LoginData data,Model model,HttpSession session) {
+	public ResponseEntity<ApiResponse> login(@RequestBody LoginData data) {
 		try {
 			response = new ApiResponse();
 			String email = data.getEmail();
@@ -52,8 +53,6 @@ public class AdminController {
 					Admin admin = adminService.getAdmin(email);
 					if(admin.isVerified()) {
 						if(admin.isAdmin()) {
-							session.setAttribute("user", adminService.getAdmin(email).getUsername());
-							session.setAttribute("adminId", adminService.getAdmin(email).getId());
 							response.setStatus("success");
 							return ResponseEntity.ok(response);
 						}else {
@@ -85,7 +84,7 @@ public class AdminController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<ApiResponse> register(@RequestBody RegisterData data,Model model) {
+	public ResponseEntity<ApiResponse> register(@RequestBody RegisterData data) {
 		try {
 			response = new ApiResponse();
 			Admin admin = new Admin();
