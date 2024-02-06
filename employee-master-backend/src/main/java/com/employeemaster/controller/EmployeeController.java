@@ -17,12 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.employeemaster.entity.AdminActivity;
 import com.employeemaster.entity.ApiResponse;
 import com.employeemaster.entity.Employee;
-import com.employeemaster.entity.EmployeeAfter;
-import com.employeemaster.entity.EmployeeBefore;
 import com.employeemaster.service.AdminActivityService;
 import com.employeemaster.service.AdminService;
-import com.employeemaster.service.EmployeeAfterService;
-import com.employeemaster.service.EmployeeBeforeService;
 import com.employeemaster.service.EmployeeService;
 
 @CrossOrigin("http://localhost:3000")
@@ -38,12 +34,6 @@ public class EmployeeController {
 	
 	@Autowired
 	AdminActivityService adminActivityService;
-	
-	@Autowired
-	EmployeeBeforeService employeeBeforeService;
-	
-	@Autowired
-	EmployeeAfterService employeeAfterService;
 
 	ApiResponse response;
 
@@ -59,11 +49,9 @@ public class EmployeeController {
 					employee.setAddedByAdminId(id);
 					employeeService.addEmployee(employee);
 					adminActivity.setActivity("Add");
+					adminActivity.setChangeMade("Added a new Employee");
+					adminActivity.setEmployeeId(employee.getId());
 					adminActivity.setAdmin(adminService.getAdminById(id));
-					EmployeeAfter after = new EmployeeAfter(employee);
-					employeeAfterService.save(after);
-					adminActivity.setAfter(after);
-					adminActivity.setBefore(null);
 					adminActivity.setTimestamp(LocalDateTime.now());
 					adminActivityService.addActivity(adminActivity);
 					response.setStatus("success");
@@ -108,20 +96,18 @@ public class EmployeeController {
 	public ResponseEntity<ApiResponse> updateEmployee(@RequestBody Employee employee, @RequestParam String changeMade) {
 		response = new ApiResponse();
 		try {
-			EmployeeBefore before = new EmployeeBefore(employeeService.getEmployeeById(employee.getId()));
-			EmployeeAfter after = new EmployeeAfter(employee);
-			employeeBeforeService.save(before);
-			employeeAfterService.save(after);
-			
 			employeeService.updateEmployee(employee);
 		
 			adminActivity = new AdminActivity();
 			adminActivity.setAdmin(adminService.getAdminById(employee.getAddedByAdminId()));
 			adminActivity.setActivity("Update");
-			adminActivity.setBefore(before);
-			adminActivity.setAfter(after);
 			adminActivity.setTimestamp(LocalDateTime.now());
-			adminActivity.setChangeMade(changeMade);
+			if(changeMade != "") {
+				adminActivity.setChangeMade("Updated " + changeMade + " of " + employee.getFirstName() + " " + employee.getSecondName());
+			}else {
+				adminActivity.setChangeMade("Updated Employee : " + employee.getFirstName() + " " + employee.getSecondName());
+			}
+			adminActivity.setEmployeeId(employee.getId());
 			adminActivityService.addActivity(adminActivity);
 			response.setStatus("success");
 			return ResponseEntity.ok(response);
@@ -137,7 +123,14 @@ public class EmployeeController {
 	public ResponseEntity<ApiResponse> deleteEmployee(@RequestParam Long id) {
 		response = new ApiResponse();
 		try {
+			Employee employee = employeeService.getEmployeeById(id);
 			employeeService.deleteEmployee(id);
+			adminActivity = new AdminActivity();
+			adminActivity.setAdmin(adminService.getAdminById(employee.getAddedByAdminId()));
+			adminActivity.setActivity("Delete");
+			adminActivity.setTimestamp(LocalDateTime.now());
+			adminActivity.setChangeMade("Deleted Employee : " + employee.getFirstName() + " " + employee.getSecondName());
+			adminActivityService.addActivity(adminActivity);
 			response.setStatus("success");
 			return ResponseEntity.ok(response);
 		} catch(Exception e) {
