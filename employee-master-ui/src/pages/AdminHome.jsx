@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Routes, Route, Link } from 'react-router-dom';
 import AdminNav from '../components/AdminNav';
 import ViewEmployees from '../components/ViewEmployees';
@@ -6,10 +6,12 @@ import ViewAct from '../components/ViewAct';
 import EmpReq from '../components/EmpReq';
 import AddEmp from '../components/AddEmp';
 import ViewEmployee from '../components/ViewEmployee';
-import EmpDelete from '../components/EmpDelete';
 import EmpUpdate from '../components/EmpUpdate';
 
-export default function adminHome() {
+export default function AdminHome() {
+
+  const [ commonMessage, setCommonMessage ] = useState("");
+
   return (
     <div className="sa-container">
       <nav className='sa-nav'>
@@ -25,13 +27,12 @@ export default function adminHome() {
       </nav>
       <Routes>
           <Route path='/' element={<AdminNav />} />
-          <Route path='/viewEmp' element={<ViewEmployees />} />
-          <Route path='/viewEmp/:empId' element={<ViewEmployee />} />
-          <Route path='/viewAct' element={<ViewAct />} />
-          <Route path='/empReq' element={<EmpReq />} />
-          <Route path='/addEmp' element={<AddEmp />} />
-          <Route path='/update/:empId' element={<EmpUpdate />} />
-          <Route path='/delete/:empId' element={<EmpDelete />} />
+          <Route path='/viewEmp' element={<ViewEmployees commonMessage={commonMessage} setCommonMessage={setCommonMessage} />} />
+          <Route path='/viewEmp/:empId' element={<ViewEmployee commonMessage={commonMessage} setCommonMessage={setCommonMessage}/>} />
+          <Route path='/viewAct' element={<ViewAct commonMessage={commonMessage} setCommonMessage={setCommonMessage} />} />
+          <Route path='/empReq' element={<EmpReq commonMessage={commonMessage} setCommonMessage={setCommonMessage}/>} />
+          <Route path='/addEmp' element={<AddEmp commonMessage={commonMessage} setCommonMessage={setCommonMessage}/>} />
+          <Route path='/update/:empId' element={<EmpUpdate commonMessage={commonMessage} setCommonMessage={setCommonMessage} />} />
       </Routes>
     </div>
   )

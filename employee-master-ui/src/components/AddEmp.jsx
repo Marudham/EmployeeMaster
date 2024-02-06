@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { selectUser } from '../authSlice';
 import { Link, useNavigate } from 'react-router-dom'; 
 
-export default function AddEmp() {
+export default function AddEmp({ commonMessage, setCommonMessage }) {
 
   const user = useSelector(selectUser);
   const [ message, setMessage ] = useState("");
@@ -81,12 +81,17 @@ export default function AddEmp() {
         });
         if(response.data.status === 'success'){
           setMessage("Employee Added successfully");
+          setCommonMessage("Employee Added successfully")
           navigate("/adminHome/viewEmp")
 
         }
       } catch (error) {
-        console.log(error.response.data);
-        setMessage(error.response.data.message);
+        console.log(error);
+        if (error.response && error.response.data && error.response.data.message) {
+          setMessage(error.response.data.message);
+        } else {
+          setMessage("Unexpected Error has occurred!");
+        }
       }
     },
   });
@@ -369,11 +374,11 @@ export default function AddEmp() {
             )}
             </div>
             {message && (
-              <p id="eu-message" style={{height:'10px'}}>
-                {message}
-                <button style={{width: '30px', padding: '3px'}} className="eu-no-message" onClick={() => setMessage('')}>
-                  X
-                </button>
+            <p id="message">
+              {message}
+              <button className="no-message" onClick={() => setMessage('')}>
+                X
+              </button>
               </p>
             )}
             <div className='eu-form-group'>

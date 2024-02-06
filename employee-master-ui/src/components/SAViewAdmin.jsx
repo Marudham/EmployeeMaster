@@ -65,10 +65,14 @@ export default function SAViewAdmin() {
   }
 
   function handleCommonError(error) {
-    console.log(error.response.data);
-    setMessage(error.response.data.message);
+    console.log(error);
+    if (error.response && error.response.data && error.response.data.message) {
+      setMessage(error.response.data.message);
+    } else {
+      setMessage("Unexpected Error has occurred!");
+    }
   }
-
+  
   return (
     <div className="sa-view-container">
       <div className="sa-view-row">
@@ -103,21 +107,21 @@ export default function SAViewAdmin() {
                 {admin.admin ? (
                   <div>
                     Approved 
-                    <button onClick={ () => handleDisapprove(admin.id)} className="btn btn-primary">
+                    <button onClick={ () => handleDisapprove(admin.id)} className="btn-sa btn-primary">
                        Disapprove
                     </button>
                   </div>
                 ) : (
                   <div>
                     Not Approved 
-                    <button onClick={ () => handleApprove(admin.id)} className="btn btn-primary">
+                    <button onClick={ () => handleApprove(admin.id)} className="btn-sa btn-primary">
                       Approve
                     </button>
                   </div>
                 )}
               </td>
               <td>
-                <button onClick={ () => handleDelete(admin.id)} className="btn btn-danger">
+                <button onClick={ () => handleDelete(admin.id)} className="btn-sa btn-danger">
                   Delete
                 </button>
               </td>

@@ -7,7 +7,7 @@ import { selectUser } from '../authSlice';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 
-export default function AddEmp() {
+export default function AddEmp({ commonMessage, setCommonMessage }) {
 
   const user = useSelector(selectUser);
   const [ message, setMessage ] = useState("");
@@ -98,14 +98,24 @@ export default function AddEmp() {
       }),            
     onSubmit: async (values) => {
       try {
-        const response = await axios.put("http://localhost:8080/ems/controller/updateEmployee", values);
+        const changes = prompt("Enter the changes you made:");
+        const response = await axios.put("http://localhost:8080/ems/controller/updateEmployee", values, {
+          params: {
+            changeMade: changes
+          }
+        });
         if(response.data.status === 'success'){
           setMessage("Employee Updated successfully");
+          setCommonMessage("Employee Updated successfully")
           navigate("/adminHome/viewEmp")
         }
       } catch (error) {
-        console.log(error.response.data);
-        setMessage(error.response.data.message);
+          console.log(error);
+          if (error.response && error.response.data && error.response.data.message) {
+            setMessage(error.response.data.message);
+          } else {
+            setMessage("Unexpected Error has occurred!");
+          }
       }
     },
   });
@@ -388,11 +398,11 @@ export default function AddEmp() {
             )}
             </div>
             {message && (
-              <p id="eu-message" style={{height:'10px'}}>
-                {message}
-                <button style={{width: '30px', padding: '3px'}} className="eu-no-message" onClick={() => setMessage('')}>
-                  X
-                </button>
+            <p id="message">
+              {message}
+              <button className="no-message" onClick={() => setMessage('')}>
+                X
+              </button>
               </p>
             )}
             <div className='eu-form-group'>
