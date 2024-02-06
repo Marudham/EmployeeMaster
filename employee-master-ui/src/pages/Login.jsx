@@ -26,8 +26,14 @@ export default function Login() {
           }
         }
        }catch(error){
-        console.log(error.response.data);
-        document.getElementById("message").innerHTML = error.response.data.message;
+          console.log(error);
+          if (error.response && error.response.data && error.response.data.message) {
+            // setMessage(error.response.data.message);
+            document.getElementById("message").innerHTML = error.response.data.message;
+          } else {
+            // setMessage("Unexpected Error has occurred!");
+            document.getElementById("message").innerHTML = "Unexpected Error has occurred!";
+          }
        }
   }
 

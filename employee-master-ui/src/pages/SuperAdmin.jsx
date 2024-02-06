@@ -17,9 +17,15 @@ export default function Login() {
           navigate("/SAHome");
         }
        }catch(error){
-        console.log(error.response.data);
-        document.getElementById("sa-message").innerHTML = error.response.data.message;
-       }
+        console.log(error);
+        if (error.response && error.response.data && error.response.data.message) {
+          // setMessage(error.response.data.message);
+          document.getElementById("sa-message").innerHTML = error.response.data.message;
+        } else {
+          // setMessage("Unexpected Error has occurred!");
+          document.getElementById("sa-message").innerHTML = "Unexpected Error has occurred!";
+        }
+      }
   }
 
   return (

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-export default function ViewEmployee() {
+export default function ViewEmployee({ commonMessage, setCommonMessage }) {
   const { empId } = useParams();
   const [employee, setEmployee] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEmployee = async () => {
@@ -24,6 +26,32 @@ export default function ViewEmployee() {
     fetchEmployee(); 
   }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      const response = await axios.get("http://localhost:8080/ems/controller/deleteEmployee", {
+        params: {
+          id: id
+        },
+      })
+      if(response.data.status === 'success'){
+        setCommonMessage("Employee Deleted successfully")
+        navigate("/adminHome/viewEmp")
+      }else{
+        setCommonMessage("Problem in deleting the employeee");
+        navigate("/adminHome/viewEmp")
+      }
+    } catch (error) {
+      console.log(error)
+      if (error.response && error.response.data && error.response.data.message) {
+        setCommonMessage(error.response.data.message);
+        navigate("/adminHome/viewEmp")
+      } else {
+        setCommonMessage("Unexpected Error has occurred!");
+        navigate("/adminHome/viewEmp")
+      }
+    }
+  }
+  
   return (
     <div className="employee-details">
       <h2 className="employee-details-header">Employee Details</h2>
@@ -51,7 +79,7 @@ export default function ViewEmployee() {
       )}
       <div className="employee-details-button-container">
         <Link to={`/adminHome/update/${employee?.id}`} className="update">Update</Link>
-        <Link to={`/adminHome/delete/${employee?.id}`} className="delete">Delete</Link>
+        <button onClick={ () => handleDelete(employee.id)} className="delete">Delete</button>
         <Link to={'/adminHome/viewEmp'} className="back">Go Back</Link>
       </div>
     </div>
