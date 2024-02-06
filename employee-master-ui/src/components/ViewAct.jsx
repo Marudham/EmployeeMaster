@@ -63,9 +63,6 @@ export default function ViewAct() {
               <p>Activity: {activity.activity}</p>
               <p>Change Made: {activity.changeMade ? activity.changeMade : 'Null'}</p>
               <p>Timestamp: {formatTimestamp(activity.timestamp)}</p>
-              <p>Before: {activity.before ? activity.before.email : 'Null'}</p>
-              <p>After: {activity.after ? activity.after.email : 'Null'}</p>
-              <p>Admin: {activity.admin.username}</p>
             </li>
           ))}
         </ul>

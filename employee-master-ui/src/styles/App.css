@@ -892,3 +892,62 @@ select {
   background-color: #ddd;
 }
 
+
+/* Employee Activity styles */
+
+.eview-act-container {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.eview-act-header {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.eview-act-nomsg {
+  color: #888;
+  font-style: italic;
+}
+
+.eview-act-ul {
+  padding: 0;
+}
+
+.eview-act-li {
+  list-style-type: none;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.eview-act-li:last-child {
+  margin-bottom: 0;
+}
+.eview-act-activity {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+.eview-act-change {
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.eview-act-li p:first-child {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+.eview-act-li p:nth-child(2) {
+  font-size: 1.2rem;
+}
+.eview-act-li p:last-child {
+  color: #666;
+  font-size: 1.1rem;
+}
