@@ -17,33 +17,27 @@ public class AdminActivity {
 	private String activity;
 	private String changeMade;
 	private LocalDateTime timestamp;
-	@ManyToOne
-	private EmployeeBefore before;
-	@ManyToOne
-	private EmployeeAfter after;
+	private Long employeeId;
+	
 	@ManyToOne
 	private Admin admin;
-	
 	@Override
 	public String toString() {
 		return "AdminActivity [id=" + id + ", activity=" + activity + ", changeMade=" + changeMade + ", timestamp="
-				+ timestamp + ", before=" + before + ", after=" + after + ", admin=" + admin + "]";
+				+ timestamp + ", employeeId=" + employeeId + ", admin=" + admin + "]";
 	}
-
+	
 	public AdminActivity() {
-		super();
-		// TODO Auto-generated constructor stub
 	}
-
-	public AdminActivity(Long id, String activity, String changeMade, LocalDateTime timestamp, EmployeeBefore before,
-			EmployeeAfter after, Admin admin) {
+	
+	public AdminActivity(Long id, String activity, String changeMade, LocalDateTime timestamp, Long employeeId,
+			Admin admin) {
 		super();
 		this.id = id;
 		this.activity = activity;
 		this.changeMade = changeMade;
 		this.timestamp = timestamp;
-		this.before = before;
-		this.after = after;
+		this.employeeId = employeeId;
 		this.admin = admin;
 	}
 
@@ -55,14 +49,14 @@ public class AdminActivity {
 		this.id = id;
 	}
 
-	public LocalDateTime getTimestamp() {
-		return timestamp;
+	public String getActivity() {
+		return activity;
 	}
 
-	public void setTimestamp(LocalDateTime timestamp) {
-		this.timestamp = timestamp;
+	public void setActivity(String activity) {
+		this.activity = activity;
 	}
-	
+
 	public String getChangeMade() {
 		return changeMade;
 	}
@@ -71,20 +65,20 @@ public class AdminActivity {
 		this.changeMade = changeMade;
 	}
 
-	public EmployeeBefore getBefore() {
-		return before;
+	public LocalDateTime getTimestamp() {
+		return timestamp;
 	}
 
-	public void setBefore(EmployeeBefore before) {
-		this.before = before;
+	public void setTimestamp(LocalDateTime timestamp) {
+		this.timestamp = timestamp;
 	}
 
-	public EmployeeAfter getAfter() {
-		return after;
+	public Long getEmployeeId() {
+		return employeeId;
 	}
 
-	public void setAfter(EmployeeAfter after) {
-		this.after = after;
+	public void setEmployeeId(Long employeeId) {
+		this.employeeId = employeeId;
 	}
 
 	public Admin getAdmin() {
@@ -94,14 +88,5 @@ public class AdminActivity {
 	public void setAdmin(Admin admin) {
 		this.admin = admin;
 	}
-
-	public String getActivity() {
-		return activity;
-	}
-
-	public void setActivity(String activity) {
-		this.activity = activity;
-	}
-	
 	
 }
