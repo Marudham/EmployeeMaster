@@ -1,9 +1,12 @@
 package com.employeemaster.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,12 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.employeemaster.service.EmployeeService;
 import com.employeemaster.entity.Admin;
 import com.employeemaster.entity.ApiResponse;
+import com.employeemaster.entity.Employee;
 import com.employeemaster.entity.LoginData;
 import com.employeemaster.entity.RegisterData;
+import com.employeemaster.service.AdminActivityService;
 import com.employeemaster.service.AdminService;
 import com.employeemaster.service.EmailService;
-
-import jakarta.servlet.http.HttpSession;
 
 @CrossOrigin("http://localhost:3000")
 @RestController
@@ -30,6 +33,9 @@ public class AdminController {
 
 	@Autowired
 	EmployeeService employeeService;
+	
+	@Autowired
+	AdminActivityService adminActivityService;
 
 	@Autowired
 	EmailService emailService;
@@ -37,8 +43,9 @@ public class AdminController {
 	ApiResponse response = new ApiResponse();
 
 	@PostMapping("/login")
-	public ResponseEntity<ApiResponse> login(@RequestBody LoginData data,Model model,HttpSession session) {
+	public ResponseEntity<ApiResponse> login(@RequestBody LoginData data) {
 		try {
+			response = new ApiResponse();
 			String email = data.getEmail();
 			String password = data.getPassword();
 			if(adminService.isAdminExist(email)) {
@@ -46,8 +53,6 @@ public class AdminController {
 					Admin admin = adminService.getAdmin(email);
 					if(admin.isVerified()) {
 						if(admin.isAdmin()) {
-							session.setAttribute("user", adminService.getAdmin(email).getUsername());
-							session.setAttribute("adminId", adminService.getAdmin(email).getId());
 							response.setStatus("success");
 							return ResponseEntity.ok(response);
 						}else {
@@ -79,8 +84,9 @@ public class AdminController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<ApiResponse> register(@RequestBody RegisterData data,Model model) {
+	public ResponseEntity<ApiResponse> register(@RequestBody RegisterData data) {
 		try {
+			response = new ApiResponse();
 			Admin admin = new Admin();
 			admin.setEmail(data.getEmail());
 			admin.setPassword(data.getPassword());
@@ -104,8 +110,33 @@ public class AdminController {
 
 	}
 
-	
+	@GetMapping("/fetchEmployees")
+	public ResponseEntity<ApiResponse> fetchEmployees(@RequestParam Long id){
+		try {
+			response = new ApiResponse();
+			List<Employee> employeeList = employeeService.fetchAllEmployeeByAdminId(id);
+			response.setStatus("success");
+			response.setEmployeeList(employeeList);
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setStatus("error");
+			response.setMessage("Unexpected Error Occured While Retrieving Employee details, Please try Again");
+			return ResponseEntity.internalServerError().body(response);
+		}
+	}
 
+	@GetMapping("/getAdminId")
+	public ResponseEntity<Long> getAdminId(@RequestParam String email){
+		try {
+			response = new ApiResponse();
+			return ResponseEntity.ok(adminService.getAdmin(email).getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.internalServerError().body(-1l);
+		}
+	}
+	
 	@PostMapping("/requestEmail")
 	public String requestEmail(@RequestParam String email, Model model) {
 		try {

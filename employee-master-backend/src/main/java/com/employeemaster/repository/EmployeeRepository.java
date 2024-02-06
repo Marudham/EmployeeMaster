@@ -46,4 +46,12 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>{
 
 	Employee findByPhoneNo(String phoneNo);
 
+	List<Employee> findAllByDateOfBirth(String filterValue);
+
+	List<Employee> findAllByPercentage10(String filterValue);
+
+	List<Employee> findAllByPercentage12(String filterValue);
+
+	List<Employee> findAllByPercentageDeg(String filterValue);
+
 }

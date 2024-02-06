@@ -62,15 +62,19 @@ public class EmployeeServiceImplementation implements EmployeeService{
 			case "secondName" :	return employeeRepo.findAllBySecondName(filterValue);
 			case "email" :	return employeeRepo.findAllByEmail(filterValue);
 			case "phoneNo" :	return employeeRepo.findAllByPhoneNo(filterValue);
+			case "dateOfBirth" :	return employeeRepo.findAllByDateOfBirth(filterValue);
 			case "address" :	return employeeRepo.findAllByAddress(filterValue);
 			case "gender" :	return employeeRepo.findAllByGender(filterValue);
-			case "joinDate" :	return employeeRepo.findAllByJoinDate(filterValue);
+			case "education" :	return employeeRepo.findAllByEducation(filterValue);
+			case "percentage10" :	return employeeRepo.findAllByPercentage10(filterValue);
+			case "percentage12" :	return employeeRepo.findAllByPercentage12(filterValue);
+			case "percentageDeg" :	return employeeRepo.findAllByPercentageDeg(filterValue);
 			case "department" :	return employeeRepo.findAllByDepartment(filterValue);
+			case "joinDate" :	return employeeRepo.findAllByJoinDate(filterValue);
 			case "position" :	return employeeRepo.findAllByPosition(filterValue);
 			case "salary" :	return employeeRepo.findAllBySalary(filterValue);
 			case "supervisor" :	return employeeRepo.findAllBySupervisor(filterValue);
 			case "project" :	return employeeRepo.findAllByProject(filterValue);
-			case "education" :	return employeeRepo.findAllByEducation(filterValue);
 			case "status" :	return employeeRepo.findAllByStatus(filterValue);
 			default : return employeeRepo.findAll();
 			}
@@ -87,6 +91,11 @@ public class EmployeeServiceImplementation implements EmployeeService{
 		}else{
 			return true;
 		}
+	}
+
+	@Override
+	public void updateEmployee(Employee employee) {
+		employeeRepo.save(employee);
 	}
 	
 //	@Override

@@ -1,9 +1,13 @@
 package com.employeemaster.entity;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Admin {
@@ -17,19 +21,22 @@ public class Admin {
 	private boolean isVerified;
 	private boolean isAdmin;
 	private String emailVerificationToken;
+//	@OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
+	@OneToMany
+	private List<AdminActivity> activities;
 	
 	@Override
 	public String toString() {
 		return "Admin [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password
 				+ ", isVerified=" + isVerified + ", isAdmin=" + isAdmin + ", emailVerificationToken="
-				+ emailVerificationToken + "]";
+				+ emailVerificationToken + ", activities=" + activities + "]";
 	}
 
 	public Admin() {
 	}
 
-	public Admin(long id, String username, String email, String password, boolean isVerified,
-			boolean isAdmin, String emailVerificationToken) {
+	public Admin(long id, String username, String email, String password, boolean isVerified, boolean isAdmin,
+			String emailVerificationToken, List<AdminActivity> activities) {
 		super();
 		this.id = id;
 		this.username = username;
@@ -38,6 +45,7 @@ public class Admin {
 		this.isVerified = isVerified;
 		this.isAdmin = isAdmin;
 		this.emailVerificationToken = emailVerificationToken;
+		this.activities = activities;
 	}
 
 	public long getId() {
@@ -94,6 +102,14 @@ public class Admin {
 
 	public void setEmailVerificationToken(String emailVerificationToken) {
 		this.emailVerificationToken = emailVerificationToken;
+	}
+
+	public List<AdminActivity> getActivities() {
+		return activities;
+	}
+
+	public void setActivities(List<AdminActivity> activities) {
+		this.activities = activities;
 	}
 	
 }
