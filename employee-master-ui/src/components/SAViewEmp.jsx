@@ -87,7 +87,7 @@ export default function SAViewEmp() {
               <td>{employee.supervisor}</td>
               <td>{employee.project}</td>
               <td>{employee.status}</td>
-              <td>{admins.find(admin => admin.id === employee.addedByAdminId)?.username}</td>
+              <td>{admins && admins.find(admin => admin.id === employee.addedByAdminId)?.username}</td>
             </tr>
           ))}
         </tbody>
