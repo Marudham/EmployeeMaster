@@ -24,4 +24,9 @@ public class AdminActivityServiceImplementation implements AdminActivityService{
 		return adminActivityRepo.findByAdminId(id);
 	}
 
+	@Override
+	public List<AdminActivity> fetchAllActivity() {
+		return adminActivityRepo.findAll();
+	}
+
 }

@@ -13,31 +13,40 @@ public class ApiResponse {
     private List<Employee> employeeList;
     private List<Admin> adminList;
     private List<AdminActivity> adminActivities;
+    private List<EmployeeRequest> employeeRequests;
     private Employee employee;
     private Admin admin;
-    
-    @Override
+
+	@Override
 	public String toString() {
 		return "ApiResponse [status=" + status + ", message=" + message + ", employeeList=" + employeeList
-				+ ", adminList=" + adminList + ", adminActivities=" + adminActivities + ", employee=" + employee
-				+ ", admin=" + admin + "]";
+				+ ", adminList=" + adminList + ", adminActivities=" + adminActivities + ", employeeRequests="
+				+ employeeRequests + ", employee=" + employee + ", admin=" + admin + "]";
 	}
 
 	public ApiResponse() {	
 	}
 
-	
-
 	public ApiResponse(String status, String message, List<Employee> employeeList, List<Admin> adminList,
-			List<AdminActivity> adminActivities, Employee employee, Admin admin) {
+			List<AdminActivity> adminActivities, List<EmployeeRequest> employeeRequests, Employee employee,
+			Admin admin) {
 		super();
 		this.status = status;
 		this.message = message;
 		this.employeeList = employeeList;
 		this.adminList = adminList;
 		this.adminActivities = adminActivities;
+		this.employeeRequests = employeeRequests;
 		this.employee = employee;
 		this.admin = admin;
+	}
+	
+	public List<EmployeeRequest> getEmployeeRequests() {
+		return employeeRequests;
+	}
+
+	public void setEmployeeRequests(List<EmployeeRequest> employeeRequests) {
+		this.employeeRequests = employeeRequests;
 	}
 
 	public String getStatus() {
