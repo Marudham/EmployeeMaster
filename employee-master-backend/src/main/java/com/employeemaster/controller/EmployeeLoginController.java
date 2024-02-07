@@ -1,13 +1,16 @@
 package com.employeemaster.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.employeemaster.entity.ApiResponse;
 import com.employeemaster.entity.Employee;
 import com.employeemaster.entity.EmployeeLogin;
 import com.employeemaster.service.AdminService;
@@ -16,9 +19,9 @@ import com.employeemaster.service.EmployeeLoginService;
 import com.employeemaster.service.EmployeeService;
 import com.employeemaster.service.TokenService;
 
-import jakarta.servlet.http.HttpSession;
-
-@Controller
+@CrossOrigin("http://localhost:3000")
+@RestController
+@RequestMapping("/ems/controller")
 public class EmployeeLoginController {
 
 	@Autowired
@@ -35,48 +38,57 @@ public class EmployeeLoginController {
 	
 	@Autowired
 	AdminService adminService;
+	
+	ApiResponse response;
 
 	@PostMapping("/prepareLink")
-	public String prepareLink(@ModelAttribute EmployeeLogin employeeLogin, HttpSession session, Model model) {
+	public ResponseEntity<ApiResponse> prepareLink(@RequestBody EmployeeLogin employeeLogin) {
+		response = new ApiResponse();
 		try {
 			if(employeeService.isEmployeeExist(employeeLogin.getEmail())) {
 				String token = tokenService.generateUniqueToken();
 				employeeLogin.setVerificationToken(token);
 				employeeLoginService.addEmployeeLogin(employeeLogin);
-				String subject = "Employee Login - Employee Management System";
-				String body = "To View Employee Details click the following link: <br>"
-							+ "http://localhost:8080/verifyEmployee?token=" + employeeLogin.getVerificationToken() 
-			                + "&id=" + employeeLogin.getId();
+				String subject = "Employee Login - EmployeeMaster";
+				String body = "To View Employee Details, "
+						+ "<br><a href=\"http://localhost:3000/verifyEmployee/" + employeeLogin.getVerificationToken() 
+			            + "/" + employeeLogin.getId() + "\">Click Here.</a>";
 				emailService.sendEmail(employeeLogin.getEmail(), subject, body);
-				model.addAttribute("message", "Email has been sent, Check your Email to view Employee Details");
-				return "employeeLogin";
+				response.setStatus("success");
+				return ResponseEntity.ok(response);
 			}else {
-				model.addAttribute("message", "Entered Email is not found in Employee Database");
-				return "employeeLogin";
+				response.setStatus("email-not-exist");
+				response.setMessage("Entered Email does not exist in Employee Records");
+				return ResponseEntity.badRequest().body(response);
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
-			model.addAttribute("message", "Problem occured while preparing the Verification Link, Enter valid email or Try again");
-			return "employeeLogin";
+			response.setStatus("error");
+			response.setMessage("Unexpected error occured while preparing link, Please try again");
+			return ResponseEntity.internalServerError().body(response);
 		}
 	}
 	
 	@GetMapping("/verifyEmployee")
-	public String verifyEmployee(@RequestParam String token, @RequestParam Long id, Model model) {
+	public ResponseEntity<ApiResponse> verifyEmployee(@RequestParam String token, @RequestParam Long id) {
+		response = new ApiResponse();
 		try {
 			if(employeeLoginService.verifyToken(token,id)) {
 				Employee employee = employeeService.getEmployeeByEmail(employeeLoginService.getEmployeeLogin(id).getEmail());
-				model.addAttribute("employee", employee);
-				model.addAttribute("adminInfo", adminService.getAdminById(employee.getAddedByAdminId()));
-				return "employeeHome";
+				response.setStatus("success");
+				response.setEmployee(employee);
+				response.setAdmin(adminService.getAdminById(employee.getAddedByAdminId()));
+				return ResponseEntity.ok(response);
 			}else {
-				model.addAttribute("message", "Cannot verify the Link, Try again");
-				return "employeeLogin";
+				response.setStatus("cannot-verify");
+				response.setMessage("Cannot verify the Link");
+				return ResponseEntity.badRequest().body(response);
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
-			model.addAttribute("message", "Problem occured while Verifying the Link, Try again");
-			return "employeeLogin";
+			response.setStatus("error");
+			response.setMessage("Unexpected error occured while verifying link, Please try again");
+			return ResponseEntity.internalServerError().body(response);
 		}
 	}
 	

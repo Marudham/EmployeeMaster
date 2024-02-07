@@ -14,19 +14,14 @@ public class EmailService {
 	private JavaMailSender javaMailSender;
 
 	public void sendEmail(String to, String subject, String htmlBody) throws Exception {
-		try {
-			MimeMessage message = javaMailSender.createMimeMessage();
-			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+		MimeMessage message = javaMailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-			helper.setTo(to);
-			helper.setSubject(subject);
-			helper.setText(htmlBody, true);
+		helper.setTo(to);
+		helper.setSubject(subject);
+		helper.setText(htmlBody, true);
 
-			javaMailSender.send(message);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
-		}
+		javaMailSender.send(message);
 	}
 
 	//    public void sendEmail(String to, String subject, String body) {

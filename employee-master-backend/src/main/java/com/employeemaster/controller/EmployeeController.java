@@ -1,6 +1,7 @@
 package com.employeemaster.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class EmployeeController {
 					employee.setAddedByAdminId(id);
 					employeeService.addEmployee(employee);
 					adminActivity.setActivity("Add");
-					adminActivity.setChangeMade("Added a new Employee");
+					adminActivity.setChangeMade("Added Employee : " + employee.getFirstName() + " " + employee.getSecondName());
 					adminActivity.setEmployeeId(employee.getId());
 					adminActivity.setAdmin(adminService.getAdminById(id));
 					adminActivity.setTimestamp(LocalDateTime.now());
@@ -103,7 +104,7 @@ public class EmployeeController {
 			adminActivity.setActivity("Update");
 			adminActivity.setTimestamp(LocalDateTime.now());
 			if(changeMade != "") {
-				adminActivity.setChangeMade("Updated " + changeMade + " of " + employee.getFirstName() + " " + employee.getSecondName());
+				adminActivity.setChangeMade("Updated " + changeMade + " of : " + employee.getFirstName() + " " + employee.getSecondName());
 			}else {
 				adminActivity.setChangeMade("Updated Employee : " + employee.getFirstName() + " " + employee.getSecondName());
 			}
@@ -143,10 +144,16 @@ public class EmployeeController {
 
 	@GetMapping("/applyFilter")
 	public ResponseEntity<ApiResponse> applyFilter(@RequestParam("filterBasedOn") String filterBasedOn, 
-			@RequestParam("filterValue") String filterValue) {
+			@RequestParam("filterValue") String filterValue, @RequestParam Long id) {
 		response = new ApiResponse();
 		try {
-			List<Employee> filteredEmployees = employeeService.filterEmployees(filterBasedOn, filterValue);
+			List<Employee> employees = employeeService.filterEmployees(filterBasedOn, filterValue);
+			List<Employee> filteredEmployees = new ArrayList<>();
+			for(Employee emp : employees) {
+				if(emp.getAddedByAdminId() == id) {
+					filteredEmployees.add(emp);
+				}
+			}
 			response.setStatus("success");
 			response.setEmployeeList(filteredEmployees);
 			return ResponseEntity.ok(response);

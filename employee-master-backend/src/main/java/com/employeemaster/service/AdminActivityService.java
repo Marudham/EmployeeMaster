@@ -10,4 +10,6 @@ public interface AdminActivityService {
 
 	List<AdminActivity> fetchActivityByAdminId(Long id);
 
+	List<AdminActivity> fetchAllActivity();
+
 }
