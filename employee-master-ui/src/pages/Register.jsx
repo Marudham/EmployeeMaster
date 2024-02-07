@@ -22,7 +22,6 @@ export default function Register() {
       try{
         const response = await axios.post("http://localhost:8080/ems/controller/register", values);
         if(response.data.status === 'success'){
-          console.log("success");
           document.getElementById("message").innerHTML = response.data.message;
           setShowPopup(true);
         }

@@ -20,7 +20,6 @@ export default function ViewAct() {
           id: user.id
         }
       });
-      console.log(response.data)
       if(response.data.status === 'success'){
         setActivities(response.data.adminActivities.reverse())
       }
