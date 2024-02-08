@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -134,25 +133,6 @@ public class AdminController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.internalServerError().body(-1l);
-		}
-	}
-	
-	@PostMapping("/requestEmail")
-	public String requestEmail(@RequestParam String email, Model model) {
-		try {
-			if(adminService.isAdminExist(email)) {
-				adminService.sendVerificationEmail(email);
-				model.addAttribute("message", "Verification Email has been Sent");
-				return "requestEmail";
-			}else {
-				model.addAttribute("message", "Cannot Find the Email, Please Enter Correct Email or Register");
-				return "requestEmail";
-			}
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			model.addAttribute("message", "Problem Occured While sending Email, Enter a Valid Email or try Again");
-			return "requestEmail";
 		}
 	}
 

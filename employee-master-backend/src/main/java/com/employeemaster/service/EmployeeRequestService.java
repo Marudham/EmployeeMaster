@@ -17,7 +17,7 @@ public class EmployeeRequestService {
 
 	@Autowired
 	EmployeeService employeeService;
-
+	
 	public void save(EmployeeRequest employeeRequest) {
 		employeeRequestRepo.save(employeeRequest);
 	}
@@ -36,10 +36,9 @@ public class EmployeeRequestService {
 
 	public void execute(Long id) throws Exception{
 		EmployeeRequest employeeRequest = getById(id);
-		Long empId = employeeRequest.getEmployeeId();
 		String field = employeeRequest.getField();
 		String value = employeeRequest.getValue();
-		Employee employee = employeeService.getEmployeeById(empId);
+		Employee employee = employeeRequest.getEmployee();
 		switch(field) {
 		case "firstName" :	{
 			employee.setFirstName(value);

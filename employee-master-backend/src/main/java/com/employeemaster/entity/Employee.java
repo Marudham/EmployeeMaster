@@ -30,7 +30,12 @@ public class Employee {
 	private String project;
 	private String status;
 	private long addedByAdminId;
-	
+//	@OneToMany
+//	private List<EmployeeRequest> employeeRequests;
+
+	public Employee() {
+	}
+
 	@Override
 	public String toString() {
 		return "Employee [id=" + id + ", firstName=" + firstName + ", secondName=" + secondName + ", email=" + email
@@ -39,9 +44,6 @@ public class Employee {
 				+ percentage12 + ", percentageDeg=" + percentageDeg + ", joinDate=" + joinDate + ", department="
 				+ department + ", position=" + position + ", salary=" + salary + ", supervisor=" + supervisor
 				+ ", project=" + project + ", status=" + status + ", addedByAdminId=" + addedByAdminId + "]";
-	}
-
-	public Employee() {
 	}
 
 	public Employee(long id, String firstName, String secondName, String email, String phoneNo, String dateOfBirth,
@@ -70,7 +72,7 @@ public class Employee {
 		this.status = status;
 		this.addedByAdminId = addedByAdminId;
 	}
-
+	
 	public long getId() {
 		return id;
 	}
