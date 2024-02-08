@@ -1,13 +1,10 @@
 import React ,{ useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
-import { selectUser } from '../authSlice';
 import axios from 'axios'
 
 export default function SAViewAct() {
 
   const [ activities, setActivities ] = useState([]);
   const [ message, setMessage ] = useState('');
-  const user = useSelector(selectUser);
 
   useEffect( () => {
     fetchActivity();
@@ -15,12 +12,7 @@ export default function SAViewAct() {
 
   async function fetchActivity(){
     try {
-      const response = await axios.get("http://localhost:8080/ems/controller/fetchActivity", {
-        params: {
-          id: user.id
-        }
-      });
-      console.log(response.data)
+      const response = await axios.get("http://localhost:8080/ems/controller/fetchAllActivity");
       if(response.data.status === 'success'){
         setActivities(response.data.adminActivities.reverse())
       }

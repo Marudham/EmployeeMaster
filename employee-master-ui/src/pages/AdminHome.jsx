@@ -7,10 +7,19 @@ import EmpReq from '../components/EmpReq';
 import AddEmp from '../components/AddEmp';
 import ViewEmployee from '../components/ViewEmployee';
 import EmpUpdate from '../components/EmpUpdate';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../authSlice';
+import { useNavigate } from 'react-router-dom';
 
 export default function AdminHome() {
 
   const [ commonMessage, setCommonMessage ] = useState("");
+  const user = useSelector(selectUser);
+  const navigate = useNavigate();
+
+  if(user == null){
+    navigate("/")
+  }
 
   return (
     <div className="sa-container">

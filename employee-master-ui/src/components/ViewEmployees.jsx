@@ -17,7 +17,7 @@ export default function ViewEmployees({ commonMessage, setCommonMessage }) {
 
   useEffect( () => {
     fetchEmp();
-  }, [user.id] );
+  }, [] );
 
   async function fetchEmp(){
     try{
@@ -61,7 +61,8 @@ export default function ViewEmployees({ commonMessage, setCommonMessage }) {
       const response = await axios.get("http://localhost:8080/ems/controller/applyFilter", {
         params: {
           filterBasedOn: filterBasedOn,
-          filterValue: filterValue
+          filterValue: filterValue,
+          id: user.id
         }
       })
       if(response.data.status === 'success'){
@@ -168,6 +169,9 @@ export default function ViewEmployees({ commonMessage, setCommonMessage }) {
             <th>Actions</th>
           </tr>
         </thead>
+        {employees.length === 0 ? (
+        <p className='eview-act-nomsg'>No result found</p>
+      ) :(
         <tbody className="eview-tbody">
           {employees.map((employee) => (
             <tr key={employee.id}>
@@ -190,6 +194,7 @@ export default function ViewEmployees({ commonMessage, setCommonMessage }) {
             </tr>
           ))}
         </tbody>
+      )}
       </table>
     </div>
   )

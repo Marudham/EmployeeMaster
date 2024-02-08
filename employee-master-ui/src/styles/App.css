@@ -268,6 +268,11 @@ body {
   list-style: none;
   gap: 750px;
   }
+  .sa-nav-ul-ve {
+    display: flex;
+  list-style: none;
+  gap: 580px;
+  }
   
   .sa-nav-li {
     padding: 5px;
@@ -950,4 +955,378 @@ select {
 .eview-act-li p:last-child {
   color: #666;
   font-size: 1.1rem;
+}
+
+/* Super admin view employees new Styles */
+
+.sa-view-emp-container {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+.sa-view-emp-header {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.sa-employee-box {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.sa-employee-titles ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+
+.sa-employee-titles ul li {
+  flex: 1 0 15%;
+  padding: 8px;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+}
+
+.sa-employee-details ul {
+  list-style-type: none;
+  padding: 5px;
+  margin: 0;
+  display: flex;
+}
+
+.sa-employee-details ul li {
+  flex: 1 0 15%;
+  padding: 8px;
+  border-bottom: 1px solid #ccc;
+}
+.sa-employee-details .si-no, .sa-employee-titles .si-no {
+  flex: 1 0 6%;
+}
+
+.sa-employee-details li:nth-child(even):hover{
+  background-color: #dfdddd;
+}
+.sa-employee-details li:nth-child(odd):hover{
+  background-color: #fffdfd;
+}
+
+.sa-employee-details ul li:nth-child(odd) {
+  background-color: #f2f2f2;
+}
+
+
+/* Employee Details */
+
+.ve-employee-details {
+	padding: 20px;
+}
+
+.ve-details-row {
+	display: flex;
+	margin-bottom: 10px;
+	padding: 8px 0;
+	border-bottom: 1px solid #ddd;
+	font-family: Arial, sans-serif;
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+.ve-details-label {
+	width: 200px;
+	font-weight: bold;
+	color: #333;
+	text-align: right;
+}
+
+.ve-details-value {
+	flex-grow: 1;
+	padding-left: 10px;
+	color: #666;
+}
+
+.ve-details-row {
+	display: flex;
+	margin-bottom: 10px;
+	padding: 8px 0;
+	border-bottom: 1px solid #ddd;
+}
+
+.ve-details-label {
+	width: 200px;
+	font-weight: bold;
+}
+
+.ve-details-value {
+	flex-grow: 1;
+	padding-left: 30px;
+}
+
+.ve-details-row:last-child {
+	border-bottom: none;
+}
+
+.ve-details-row:nth-child(odd) {
+	background-color: #f2f2f2;
+}
+
+.ve-details-row:hover {
+	background-color: #e0e0e0;
+}
+
+.ve-admin-info {
+	margin: 50px auto;
+	width: 60%;
+	border: 1px solid #ccc;
+	padding: 20px;
+	border-radius: 5px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	font-family: Arial, sans-serif;
+}
+
+.ve-info-row {
+	display: flex;
+	margin-bottom: 10px;
+	padding: 8px 0;
+	border-bottom: 1px solid #ddd;
+}
+
+.ve-info-label {
+	width: 150px;
+	font-weight: bold;
+	color: #333;
+}
+
+.ve-info-value {
+	flex-grow: 1;
+	padding-left: 10px;
+	color: #666;
+}
+
+.ve-loading {
+  border: 6px solid #f3f3f3; /* Light grey */
+  border-top: 6px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 2s linear infinite;
+  margin: 20px auto;
+}
+.ve-verified-status {
+  color: green;
+  padding: 4px;
+  font-size: 1.2rem;
+  margin-left: 90px;
+}
+
+
+.ve-info-row:last-child {
+	border-bottom: none;
+}
+
+/**/
+
+/* Container for the request list */
+.ve-tokens-list-container {
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 15px;
+  background-color: #f9f9f9;
+}
+
+.ve-tokens-list-header {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.ve-tokens-list-req {
+  margin-bottom: 20px;
+}
+
+.ve-tokens-list-titles ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  background-color: #333;
+  color: #fff;
+  padding: 10px 0;
+  border-radius: 5px;
+}
+
+.ve-tokens-list-titles li {
+  flex: 1;
+  text-align: center;
+}
+
+/* Table data */
+.ve-tokens-list-req ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #ccc;
+}
+.ve-tokens-list-req li{
+  flex: 1 0 15%;
+  text-align: center;
+}
+
+.ve-tokens-list-req ul:last-child {
+  border-bottom: none;
+}
+
+.ve-tokens-btn {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 30px;
+  transition: background-color 0.3s;
+}
+
+.ve-tokens-btn:hover {
+  background-color: #0056b3;
+}
+
+.ve-tokens-istoken-div {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  margin-top: 20px;
+}
+
+.ve-token-form {
+  display: flex;
+}
+
+.ve-token-select,
+.ve-token-input,
+.ve-token-submit,
+.ve-token-cancel-btn {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.ve-token-select {
+  background-color: #fff;
+}
+
+.ve-token-submit {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.ve-token-submit:hover {
+  background-color: #0056b3;
+}
+
+.ve-token-cancel-btn {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.ve-token-cancel-btn:hover {
+  background-color: #c82333;
+}
+
+/**/
+
+.emp-req-container {
+  margin: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.emp-req-header {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.emp-req-list-container {
+  margin-top: 20px;
+}
+
+.emp-req--list-header {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.emp-req-list-titles ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  background-color: #505050;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.emp-req-list-titles ul li {
+  padding: 10px;
+  text-align: center;
+  color: white;
+  border-right: 1px solid #383838;
+}
+
+.emp-req-list-titles ul li:last-child {
+  border-right: none;
+}
+
+.emp-req-list-req {
+  border: 1px solid #ccc;
+  border-top: none;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.emp-req-list-req ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: center;
+}
+
+.emp-req-list-req ul li {
+  padding: 10px;
+  text-align: center;
+}
+
+
+.emp-req-approve-btn,
+.emp-req-execute-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.emp-req-approve-btn:hover,
+.emp-req-execute-btn:hover {
+  background-color: #0056b3;
 }

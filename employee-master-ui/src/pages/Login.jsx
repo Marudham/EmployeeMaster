@@ -63,6 +63,9 @@ export default function Login() {
           </Link>
           <input type="submit" value="Login" className='login-submit' />
           <p className="new-user-text">
+              Login as -<Link className='register-link' to={"/empLogin"}>Employee</Link>
+          </p>
+          <p className="new-user-text">
               New User? <Link className='register-link' to={"/register"}>Register</Link>
           </p>
       </form>
