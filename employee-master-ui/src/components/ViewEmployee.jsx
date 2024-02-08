@@ -57,6 +57,7 @@ export default function ViewEmployee({ commonMessage, setCommonMessage }) {
       <h2 className="employee-details-header">Employee Details</h2>
       {employee && (
         <div className="employee-details-form">
+          <label>ID:</label> <span>{employee.id}</span>
           <label>First Name:</label> <span>{employee.firstName}</span>
           <label>Last Name:</label> <span>{employee.secondName}</span>
           <label>Email:</label> <span>{employee.email}</span>

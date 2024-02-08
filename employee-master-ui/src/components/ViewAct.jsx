@@ -21,7 +21,7 @@ export default function ViewAct() {
         }
       });
       if(response.data.status === 'success'){
-        setActivities(response.data.adminActivities.reverse())
+        setActivities(response.data.adminActivities)
       }
     } catch (error) {
       handleCommonError(error)
@@ -53,6 +53,14 @@ export default function ViewAct() {
   return (
     <div className='eview-act-container'>
       <h2 className='eview-act-header'>Activities</h2>
+      {message && (
+        <p id="message">
+          {message}
+          <button className="no-message" onClick={() => setMessage('')}>
+            X
+          </button>
+        </p>
+      )}
       {activities.length === 0 ? (
         <p className='eview-act-nomsg'>No activities found</p>
       ) : (
