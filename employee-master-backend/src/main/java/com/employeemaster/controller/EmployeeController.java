@@ -45,26 +45,32 @@ public class EmployeeController {
 		response = new ApiResponse();
 		try {
 			adminActivity = new AdminActivity();
-			if(!employeeService.isEmployeeExist(employee.getEmail())) {
-				if(!employeeService.isPhoneNoExist(employee.getPhoneNo())) {
-					employee.setAddedByAdminId(id);
-					employeeService.addEmployee(employee);
-					adminActivity.setActivity("Add");
-					adminActivity.setChangeMade("Added Employee : " + employee.getFirstName() + " " + employee.getSecondName());
-					adminActivity.setEmployeeId(employee.getId());
-					adminActivity.setAdmin(adminService.getAdminById(id));
-					adminActivity.setTimestamp(LocalDateTime.now());
-					adminActivityService.addActivity(adminActivity);
-					response.setStatus("success");
-					return ResponseEntity.ok(response);
+			if(!adminService.isAdminExist(employee.getEmail())) {
+				if(!employeeService.isEmployeeExist(employee.getEmail())) {
+					if(!employeeService.isPhoneNoExist(employee.getPhoneNo())) {
+						employee.setAddedByAdminId(id);
+						employeeService.addEmployee(employee);
+						adminActivity.setActivity("Add");
+						adminActivity.setChangeMade("Added Employee : " + employee.getFirstName() + " " + employee.getSecondName());
+						adminActivity.setEmployeeId(employee.getId());
+						adminActivity.setAdmin(adminService.getAdminById(id));
+						adminActivity.setTimestamp(LocalDateTime.now());
+						adminActivityService.addActivity(adminActivity);
+						response.setStatus("success");
+						return ResponseEntity.ok(response);
+					}else {
+						response.setStatus("phoneNo-exist");
+						response.setMessage("Entered Employee Phone No already exist");
+						return ResponseEntity.badRequest().body(response);
+					}
 				}else {
-					response.setStatus("phoneNo-exist");
-					response.setMessage("Entered Employee Phone No already exist");
+					response.setStatus("email-exist");
+					response.setMessage("Entered Employee Email already exist");
 					return ResponseEntity.badRequest().body(response);
 				}
 			}else {
 				response.setStatus("email-exist");
-				response.setMessage("Entered Employee Email already exist");
+				response.setMessage("Entered Employee Email already exist in Admin records");
 				return ResponseEntity.badRequest().body(response);
 			}
 
