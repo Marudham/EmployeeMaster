@@ -21,7 +21,7 @@ export default function ViewAct() {
         }
       });
       if(response.data.status === 'success'){
-        setActivities(response.data.adminActivities)
+        setActivities(response.data.adminActivities.reverse())
       }
     } catch (error) {
       handleCommonError(error)

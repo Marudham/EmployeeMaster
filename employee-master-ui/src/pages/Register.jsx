@@ -51,7 +51,7 @@ export default function Register() {
   return (
     <div className='register-container'>
         <form className='register-form' onSubmit={formik.handleSubmit}>
-            <h2>Registration</h2>
+            <h2>Admin Registration</h2>
             <p className='message' id="message"></p>
             <input
                 type="text"

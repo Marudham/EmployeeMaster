@@ -51,7 +51,7 @@ export default function EmpLogin() {
             />
             {loading && <div className="spinner"></div>}
           <p className="new-user-text">
-              New User? <Link className='register-link' to={"/register"}>Register</Link>
+              Already Have a Link? <Link className='register-link' to={"/pasteLink"}>Click Here.</Link>
           </p>
       </form>
    </div>

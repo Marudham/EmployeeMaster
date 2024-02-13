@@ -9,6 +9,7 @@ import SAHome from './components/SAHome';
 import EmpLogin from './pages/EmpLogin';
 import ForgotPassword from './pages/ForgotPassword'
 import VerifyEmployee from './components/VerifyEmployee';
+import PasteLink from './components/PasteLink';
 import './styles/App.css'
 // import './styles/LoginStyle.css'
 // import './styles/Register.css'
@@ -29,6 +30,7 @@ function App() {
           <Route path="/forgotPassword" element={<ForgotPassword />} />
           <Route path="/SAHome/*" element={<SAHome />} ></Route>
           <Route path="/verifyEmployee/:token/:id" element={<VerifyEmployee />}></Route>
+          <Route path="/pasteLink" element={<PasteLink />}></Route>
         </Routes>
       </div>
     </Router>

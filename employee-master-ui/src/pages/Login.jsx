@@ -40,7 +40,7 @@ export default function Login() {
   return (
     <div className='login-container'>
       <form className='login-form' onSubmit={handleSubmit}>
-          <h2>Login</h2>
+          <h2>Admin Login</h2>
           <p id='message'></p>
           <input
               type="email"
@@ -62,9 +62,6 @@ export default function Login() {
               Forgot Password ?
           </Link>
           <input type="submit" value="Login" className='login-submit' />
-          <p className="new-user-text">
-              Login as -<Link className='register-link' to={"/empLogin"}>Employee</Link>
-          </p>
           <p className="new-user-text">
               New User? <Link className='register-link' to={"/register"}>Register</Link>
           </p>
