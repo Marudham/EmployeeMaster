@@ -90,14 +90,20 @@ public class AdminController {
 			admin.setEmail(data.getEmail());
 			admin.setPassword(data.getPassword());
 			admin.setUsername(data.getUsername());
-			if(!adminService.isAdminExist(admin.getEmail())) {
-				adminService.addAdmin(admin);
-				response.setStatus("success");
-				response.setMessage("Registered Successfully");
-				return ResponseEntity.ok(response);
+			if(!employeeService.isEmployeeExist(admin.getEmail())) {
+				if(!adminService.isAdminExist(admin.getEmail())) {
+					adminService.addAdmin(admin);
+					response.setStatus("success");
+					response.setMessage("Registered Successfully");
+					return ResponseEntity.ok(response);
+				}else {
+					response.setStatus("already-exist");
+					response.setMessage("Entered Email already Registered");
+					return ResponseEntity.badRequest().body(response);
+				}
 			}else {
-				response.setStatus("already-exist");
-				response.setMessage("Entered Email already Registered");
+				response.setStatus("already-employee-exist");
+				response.setMessage("Entered Email already in Employee Records");
 				return ResponseEntity.badRequest().body(response);
 			}
 		} catch (Exception e) {
