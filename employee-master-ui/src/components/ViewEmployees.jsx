@@ -14,6 +14,7 @@ export default function ViewEmployees({ commonMessage, setCommonMessage }) {
   const [ filter, setFilter ] = useState(false)
   const user = useSelector(selectUser);
   const navigate = useNavigate();
+  const [ viewAll, setViewAll ] = useState(false);
 
   useEffect( () => {
     fetchEmp();
@@ -67,7 +68,7 @@ export default function ViewEmployees({ commonMessage, setCommonMessage }) {
       })
       if(response.data.status === 'success'){
         setEmployees(response.data.employeeList);
-        if(response.data.employeeList.length != 0){
+        if(response.data.employeeList.length !== 0){
           setMessage("Filter applied successfully")
         }else{
           setMessage("No Result found based on the applied filter")
@@ -101,6 +102,11 @@ export default function ViewEmployees({ commonMessage, setCommonMessage }) {
       </div>
       <Link className='eview-btn eview-btn-n' to={'/adminHome/addEmp'}>Add Employee</Link>
       <button style={{marginLeft:'50px', fontWeight:'600'}} className='btn-ev btn-primary-f' onClick={ () => setFilter(true)}>Filter</button>
+      { viewAll ? (
+        <Link  className='register-link' style={{marginLeft:'490px'}} onClick={ () => setViewAll(false)}>View Less Details</Link>
+      ) : (
+        <Link  className='register-link' style={{marginLeft:'490px'}} onClick={ () => setViewAll(true)}>View All Details</Link>
+      )}
       {message && (
         <p id="message">
           {message}
@@ -159,7 +165,61 @@ export default function ViewEmployees({ commonMessage, setCommonMessage }) {
           </button>
         </p>
       )}
-      <table className="eview-table">
+      { viewAll ? (
+        <div className='sa-view-emp-container'>
+              <table className="sa-employee-table">
+                <thead className="sa-employee-thead">
+                  <tr>
+                    <th>Id</th>
+                    <th>First_Name</th>
+                    <th>Second_Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Date_of_Birth</th>
+                    <th>Address</th>
+                    <th>Gender</th>
+                    <th>Education</th>
+                    <th>Percentage 10</th>
+                    <th>Percentage 12</th>
+                    <th>Percentage Degree</th>
+                    <th>Department</th>
+                    <th>Join_Date</th>
+                    <th>Position</th>
+                    <th>Salary</th>
+                    <th>Supervisor</th>
+                    <th>Project</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody className="sa-employee-tbody">
+                  {employees.map((employee, index) => (
+                    <tr key={employee.id}>
+                      <td>{employee.id}</td>
+                      <td>{employee.firstName}</td>
+                      <td>{employee.secondName}</td>
+                      <td>{employee.email}</td>
+                      <td>{employee.phoneNo}</td>
+                      <td>{employee.dateOfBirth}</td>
+                      <td>{employee.address}</td>
+                      <td>{employee.gender}</td>
+                      <td>{employee.education}</td>
+                      <td>{employee.percentage10}</td>
+                      <td>{employee.percentage12}</td>
+                      <td>{employee.percentageDeg}</td>
+                      <td>{employee.department}</td>
+                      <td>{employee.joinDate}</td>
+                      <td>{employee.position}</td>
+                      <td>{employee.salary}</td>
+                      <td>{employee.supervisor}</td>
+                      <td>{employee.project}</td>
+                      <td>{employee.status}</td>
+                     </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+      ) : (
+        <table className="eview-table">
         <thead className="eview-thead">
           <tr className='eview-tr'>
             <th>Employee First Name</th>
@@ -196,6 +256,7 @@ export default function ViewEmployees({ commonMessage, setCommonMessage }) {
         </tbody>
       )}
       </table>
+      )}
     </div>
   )
 }

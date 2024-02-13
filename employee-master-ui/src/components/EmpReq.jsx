@@ -93,19 +93,21 @@ export default function EmpReq() {
                             <div className='emp-req-list-titles'>
                                 <ul>
                                     <li>SI.NO</li>
+                                    <li>Employee</li>
                                     <li>Field</li>
                                     <li>Value</li>
                                     <li>Is Approved</li>
                                     <li>Is Executed</li>
                                 </ul>
                             </div>
-                        { requests.length == 0 ? (
+                        { requests.length === 0 ? (
                             <p className='eview-act-nomsg'>No Result Found</p>
                         ) : (
                             <div className='emp-req-list-req'>
                                 {requests.map( (request, index) => (
                                 <ul key={index}>
                                     <li>{index + 1}</li>
+                                    <li>{request.employee.firstName + " " + request.employee.secondName}</li>
                                     <li>{request.field}</li>
                                     <li>{request.value}</li>
                                     <li>{request.approved ? 'Approved' : (

@@ -7,19 +7,19 @@ export default function SAViewAct() {
   const [ message, setMessage ] = useState('');
 
   useEffect( () => {
+    async function fetchActivity(){
+      try {
+        const response = await axios.get("http://localhost:8080/ems/controller/fetchAllActivity");
+        if(response.data.status === 'success'){
+          setActivities(response.data.adminActivities.reverse())
+        }
+      } catch (error) {
+        handleCommonError(error)
+      }
+    }
     fetchActivity();
   }, [])
 
-  async function fetchActivity(){
-    try {
-      const response = await axios.get("http://localhost:8080/ems/controller/fetchAllActivity");
-      if(response.data.status === 'success'){
-        setActivities(response.data.adminActivities.reverse())
-      }
-    } catch (error) {
-      handleCommonError(error)
-    }
-  }
 
   function handleCommonError(error) {
     console.log(error);
@@ -46,6 +46,14 @@ export default function SAViewAct() {
   return (
     <div className='eview-act-container'>
       <h2 className='eview-act-header'>Activities</h2>
+      {message && (
+        <p id="message">
+          {message}
+          <button className="no-message" onClick={() => setMessage('')}>
+            X
+          </button>
+        </p>
+      )}
       {activities.length === 0 ? (
         <p className='eview-act-nomsg'>No activities found</p>
       ) : (
@@ -55,7 +63,7 @@ export default function SAViewAct() {
               <p>Activity: {activity.activity}</p>
               <p>Change Made: {activity.changeMade ? activity.changeMade : 'Null'}</p>
               <p>Timestamp: {formatTimestamp(activity.timestamp)}</p>
-              <p>Admin: {activity.admin.username}</p>
+              <p>Admin: {activity.admin?.username}</p>
             </li>
           ))}
         </ul>
